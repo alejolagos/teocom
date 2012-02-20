@@ -14,6 +14,9 @@ import static org.math.array.StatisticSample.*;
  * @author Yann RICHET
  */
 
+ /**
+  *	http://jmathtools.berlios.de/doku.php?id=cases:pca
+  */
 public class PCA2 {
 
 	double[][] X; // initial datas : lines = events and columns = variables
