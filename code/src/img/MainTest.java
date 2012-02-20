@@ -9,9 +9,10 @@ public class MainTest {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		PCA pca = new PCA("C:\\Users\\Marcos\\Desktop\\caras entrenamiento\\");
+		PCA pca = new PCA("C:\\teocom\\entrenamiento\\");
 		pca.entrenar();
 	}
+		
 
 	
 }
