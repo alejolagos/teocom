@@ -2,11 +2,13 @@ package img;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
 public class PCA {
+	private static Logger logger = Logger.getLogger(PCA.class.getSimpleName());
 	private ArrayList<int[]> imagenes;
 	private int[][] w;
 
@@ -28,6 +30,7 @@ public class PCA {
 
 	
 	public PCA(String dirPath) {
+		logger.info(dirPath);
 		this.imagenes = new ArrayList<int[]>();
 		this.leer(dirPath);
 	}
@@ -101,12 +104,16 @@ public class PCA {
 //				
 //		Matrix matriz = new Matrix(covarianza);
 		
-		Matrix covarianza = new Matrix(media.length, media.length);
+//		double[][] covarianza2 = new double[media.length][media.length];
+//		Matrix covarianza = new Matrix(media.length, media.length);
+		int rows = media.length;
+		int columns = media.length;
+		Matrix covarianza = new Matrix(rows, columns);
 		int j = 0;
 		i = 0;
 		
-		while (i<media.length) {
-			while (j<media.length) {
+		while (i < rows) {
+			while (j < columns) {
 				covarianza.set(i, j, aux[i]*aux[j]);
 				j++;
 			}
