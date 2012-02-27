@@ -1,5 +1,10 @@
 package img.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
+import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
 public class MathsUtils {
@@ -57,23 +62,53 @@ public class MathsUtils {
 	 * @param d
 	 * @return
 	 */
-	public static Matrix getMatrizProyeccionPCA (Matrix E, int d){
-		int m = E.getRowDimension();
-		int n = E.getColumnDimension();
+	public static Matrix getMatrizProyeccionPCA (EigenvalueDecomposition E, int d){
+		Matrix V = E.getV(); // Viene ordenada por los autovalores de menor a mayor
+		int m = V.getRowDimension();
+		int n = V.getColumnDimension();
 		
 		if (d > n){
 			d = n; 	// TODO
 		}
-		
+//		E.getRealEigenvalues()
 		Matrix W = new Matrix(m, d);
 		
-		for (int i = 0; i < n; i++){
-			for (int j = 0; j < d; j++){
-				W.set(i, j, E.get(i, j));
+		// Obtengo los autovectores mas significativos, de atras para adelante
+		for (int j = n-1; j >= n-d; j--){
+			int jPos = n-1-j;
+			for (int i = 0; i < n; i++){
+				W.set(i, jPos, V.get(i, j));
 			}
 		}
 		
 		return W;
 	}
+	
+//	public static int[] getEigenvaluesOrdenados (double[] eigenvalues){
+//		int[] pos = new int[eigenvalues.length];
+//		for (int i = 0; i < pos.length; i++){
+//			pos[i] = i;
+//		}
+//		
+//		double aux;
+//		int auxPos;
+//		
+//		for (int i = 0; i < eigenvalues.length-1; i++){
+//			for (int j = 0; j < eigenvalues.length-1; j++){
+//				if ( eigenvalues[j] < eigenvalues[j+1] ){
+//					
+//					aux = eigenvalues[j];
+//					eigenvalues[j] = eigenvalues[j+1];
+//					eigenvalues[j+1] = aux;
+//					
+//					auxPos = pos[j];
+//					pos[j] = pos[j+1];
+//					pos[j+1] = auxPos;
+//				}
+//			}
+//		}
+//		
+//		return pos;
+//	}
 	
 }
