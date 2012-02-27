@@ -1,5 +1,6 @@
 package img.dataobjects;
 
+import img.constants.Globals;
 import img.utils.CommonsUtils;
 import img.utils.MathsUtils;
 
@@ -75,7 +76,7 @@ public class PCA {
 		// Obtengo la matriz de proyeccion con los autovectores mas significativos
 		logger.info("------- OBTENGO MATRIZ DE PROYECCION -------");
 		ini = System.currentTimeMillis();
-		Matrix W = MathsUtils.getMatrizAuvectoresSignificativos(E.getV(), 7); //TODO: poner un nombre mas feliz, usar constante
+		Matrix W = MathsUtils.getMatrizProyeccionPCA(E.getV(), Globals.COLS_PCA_MATRIZ_PROYECCION);
 		fin = System.currentTimeMillis();
 		CommonsUtils.loguearTiempoEjecucion(ini, fin, this.getClass().getSimpleName(), "Tiempo obtener Autovectores mas significativos:");
 		
@@ -104,4 +105,5 @@ public class PCA {
 		
 		return X;
 	}
+	
 }

@@ -17,7 +17,7 @@ public class MathsUtils {
 			for (int j = 0; j < n; j++){
 				media[i] += X[i][j];
 			}
-//			media[i] /= m;
+			media[i] = media[i] / (double)m;
 		}
 		return media;
 	}
@@ -52,12 +52,12 @@ public class MathsUtils {
 	}
 	
 	/**
-	 * Obtengo la matriz de los autovectores mas significativos
+	 * Obtengo la matriz de proyeccion con los autovectores mas significativos
 	 * @param E
 	 * @param d
 	 * @return
 	 */
-	public static Matrix getMatrizAuvectoresSignificativos (Matrix E, int d){
+	public static Matrix getMatrizProyeccionPCA (Matrix E, int d){
 		int m = E.getRowDimension();
 		int n = E.getColumnDimension();
 		
@@ -74,7 +74,6 @@ public class MathsUtils {
 		}
 		
 		return W;
-		
 	}
 	
 }
