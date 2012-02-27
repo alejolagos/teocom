@@ -41,8 +41,10 @@ public class CovarianzaTest {
 		Matrix A = V.times(D.times(V.transpose()));
 		A.print(3, 2);
 		
-		Matrix W = MathsUtils.getMatrizAuvectoresSignificativos(V, 7);
+		Matrix W = MathsUtils.getMatrizProyeccionPCA(E, 7);
 		W.print(W.getColumnDimension(), 2);
 	}
+	
+	
 
 }

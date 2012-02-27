@@ -76,7 +76,7 @@ public class PCA {
 		// Obtengo la matriz de proyeccion con los autovectores mas significativos
 		logger.info("------- OBTENGO MATRIZ DE PROYECCION -------");
 		ini = System.currentTimeMillis();
-		Matrix W = MathsUtils.getMatrizProyeccionPCA(E.getV(), Globals.COLS_PCA_MATRIZ_PROYECCION);
+		Matrix W = MathsUtils.getMatrizProyeccionPCA(E, Globals.COLS_PCA_MATRIZ_PROYECCION);
 		fin = System.currentTimeMillis();
 		CommonsUtils.loguearTiempoEjecucion(ini, fin, this.getClass().getSimpleName(), "Tiempo obtener Autovectores mas significativos:");
 		
