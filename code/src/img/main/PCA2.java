@@ -1,13 +1,18 @@
-package img;
+package img.main;
 
-import Jama.*;
-import org.math.array.*;
-import org.math.array.LinearAlgebra.*;
-import org.math.plot.*;
- 
-// static import of all array methods : linear algebra and statistics
-import static org.math.array.LinearAlgebra.*;
-import static org.math.array.StatisticSample.*;
+import static org.math.array.DoubleArray.random;
+import static org.math.array.DoubleArray.sum;
+import static org.math.array.DoubleArray.transpose;
+import static org.math.array.LinearAlgebra.eigen;
+import static org.math.array.StatisticSample.covariance;
+import static org.math.array.StatisticSample.mean;
+import static org.math.array.StatisticSample.stddeviation;
+
+import org.math.array.DoubleArray;
+import org.math.plot.FrameView;
+import org.math.plot.Plot2DPanel;
+
+import Jama.EigenvalueDecomposition;
 
 /**
  * Copyright : BSD License

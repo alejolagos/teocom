@@ -1,4 +1,4 @@
-package img;
+package img.constants;
 
 
 public class Globals

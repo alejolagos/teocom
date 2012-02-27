@@ -1,4 +1,6 @@
-package img;
+package img.dataobjects;
+
+import img.constants.Globals;
 
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
