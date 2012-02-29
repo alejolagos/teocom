@@ -14,11 +14,14 @@ public class MainTest {
 	 */
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		PCA pca = new PCA("C:\\teocom\\entrenamiento\\");
+		PCA pca = new PCA("C:\\teocom\\entrenamiento\\", "C:\\teocom\\referencia\\");
 		try {
 			logger.info("-------- INICIO ENTRENAMIENTO --------");
 			pca.entrenar();
 			logger.info("--------  FIN ENTRENAMIENTO --------");
+			logger.info("-------- INICIO REFERENCIA --------");
+			pca.prepararMatrizXReferencia();
+			logger.info("--------  FIN REFERENCIA --------");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			logger.log(Level.SEVERE, "Error critico, no puede ejecutarse la aplicacion." + e.getCause());

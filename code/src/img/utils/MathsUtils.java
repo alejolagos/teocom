@@ -35,16 +35,18 @@ public class MathsUtils {
 		int n = X[0].length;
 		
 		double[] u = getMediaMatriz(X);
+		
 		double[][] cov = new double[m][m];
 		double[][] x_menos_u = new double[m][n];
 
-		
+		// Preparo la X menos la media
 		for (int j = 0; j < n; j++){
 			for (int i = 0; i < m; i++){
 				x_menos_u[i][j] = X[i][j] - u[i];
 			}
 		}
 		
+		// Calculo la matriz de covarianza
 		for (int k = 0; k < n; k++){ 	// es para pasar a la siguiente imagen
 			for (int j = 0; j < m; j++){ 	
 				for (int i = 0; i < m; i++){
@@ -84,31 +86,75 @@ public class MathsUtils {
 		return W;
 	}
 	
-//	public static int[] getEigenvaluesOrdenados (double[] eigenvalues){
-//		int[] pos = new int[eigenvalues.length];
-//		for (int i = 0; i < pos.length; i++){
-//			pos[i] = i;
-//		}
-//		
-//		double aux;
-//		int auxPos;
-//		
-//		for (int i = 0; i < eigenvalues.length-1; i++){
-//			for (int j = 0; j < eigenvalues.length-1; j++){
-//				if ( eigenvalues[j] < eigenvalues[j+1] ){
-//					
-//					aux = eigenvalues[j];
-//					eigenvalues[j] = eigenvalues[j+1];
-//					eigenvalues[j+1] = aux;
-//					
-//					auxPos = pos[j];
-//					pos[j] = pos[j+1];
-//					pos[j+1] = auxPos;
-//				}
-//			}
-//		}
-//		
-//		return pos;
-//	}
+	// normalization of x relatively to X mean and standard deviation
+	public static double[][] getNormalization (int[][] X, double[] media, double[] desvio) {
+		int m = X.length;
+		int n = X[0].length;
+		
+		double[][] y = new double[m][n];
+		for (int i = 0; i < m; i++)
+			for (int j = 0; j < n; j++)
+				y[i][j] = (X[i][j] - media[j]) / desvio[j];
+		return y;
+	}
+	
+	public static double[] getDesvioStdMatriz(int[][] X) {
+        double[] var = getVarianzaMatriz(X);
+        
+        int n = var.length;
+        
+        for (int i = 0; i < n; i++){
+            var[i] = Math.sqrt(var[i]);
+        }
+        return var;
+    }
+
+    public static double[] getVarianzaMatriz (int[][] X) {
+        int m = X.length;
+        int n = X[0].length;
+        
+        double[] var = new double[n];
+        
+        int degrees = (m - 1);
+        double c;
+        double s;
+        
+        for (int j = 0; j < n; j++) {
+            c = 0;
+            s = 0;
+            
+            for (int k = 0; k < m; k++){
+                s += X[k][j];
+            }
+            s = s / m;
+            
+            for (int k = 0; k < m; k++){
+                c += (X[k][j] - s) * (X[k][j] - s);
+            }
+            var[j] = c / degrees;
+        }
+        return var;
+    }
+
+    
+    /**
+	 * Calculo la covarianza de una matriz de vectores
+	 */
+	public static Matrix getMatrizNormalizadaMenosMedia (double[][] Z, double[] media){
+		int m = Z.length;
+		int n = Z[0].length;
+
+		double[][] z_menos_u = new double[m][n];
+
+		// Preparo la X menos la media
+		for (int j = 0; j < n; j++){
+			for (int i = 0; i < m; i++){
+				z_menos_u[i][j] = Z[i][j] - media[i];
+			}
+		}
+		
+		return new Matrix(z_menos_u);
+	}
+	
 	
 }

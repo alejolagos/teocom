@@ -1,11 +1,14 @@
 package img.dataobjects;
 
+import static org.math.array.StatisticSample.mean;
+import static org.math.array.StatisticSample.stddeviation;
 import img.constants.Globals;
 import img.utils.CommonsUtils;
 import img.utils.MathsUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import Jama.EigenvalueDecomposition;
@@ -13,51 +16,62 @@ import Jama.Matrix;
 
 public class PCA {
 	private static Logger logger = Logger.getLogger(PCA.class.getSimpleName());
-	private ArrayList<int[]> imagenes;
-	private Matrix w;
+	private List<int[]> imagenesEntrenamiento;
+	private List<int[]> imagenesReferencia;
 
-	public ArrayList<int[]> getImagenes() {
-		return imagenes;
+	private Matrix W;	// 	Matriz de proyeccion de PCA
+	private Matrix X;	//	Matriz prepara con las imagenes de referencia
+
+	public List<int[]> getImagenesEntrenamiento() {
+		return imagenesEntrenamiento;
 	}
 
-	public void setImagenes(ArrayList<int[]> imagenes) {
-		this.imagenes = imagenes;
+	public void setImagenesEntrenamiento (List<int[]> imagenesEntrenamiento) {
+		this.imagenesEntrenamiento = imagenesEntrenamiento;
 	}
 	
 	public Matrix getW() {
-		return w;
+		return W;
 	}
 
-	public void setW(Matrix w) {
-		this.w = w;
+	public void setW(Matrix W) {
+		this.W = W;
 	}
 
 	
-	public PCA(String dirPath) {
-		logger.info(dirPath);
-		this.imagenes = new ArrayList<int[]>();
-		this.leer(dirPath);
+	public PCA(String dirPathEntrenamiento, String dirPathReferencia) {
+		logger.info(dirPathEntrenamiento);
+		this.imagenesEntrenamiento = new ArrayList<int[]>();
+		this.imagenesReferencia = new ArrayList<int[]>();
+		this.leer (dirPathEntrenamiento, this.imagenesEntrenamiento);
+		this.leer (dirPathReferencia, this.imagenesReferencia);
 	}
 
-	private void leer(String dirPath) {
+	private void leer(String dirPath, List<int[]> imagenes) {
 		File folder = new File(dirPath);
 	    File[] listOfFiles = folder.listFiles();
 
 	    for (int i = 0; i < listOfFiles.length; i++) {
-	      if (listOfFiles[i].isFile()) {
-	        PGM imagen = new PGM(dirPath+"\\"+listOfFiles[i].getName());
-			this.imagenes.add(imagen.getPixelArray());
-	      } else if (listOfFiles[i].isDirectory()) {
-	        leer(dirPath+"\\"+listOfFiles[i].getName());
-	      }
-	    }
-	}
+			if (listOfFiles[i].isFile()) {
+				PGM imagen = new PGM(dirPath+"\\"+listOfFiles[i].getName());
+				imagenes.add(imagen.getPixelArray());
+			} 
+			else if (listOfFiles[i].isDirectory()) {
+				leer(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
+			}
+		}
+}
 	
+	/**
+	 * Entrena el algoritmo PCA obteniendo la matriz de proyeccion W
+	 * @return
+	 * @throws Exception
+	 */
 	public Matrix entrenar() throws Exception {
 		long ini = 0;
 		long fin = 0;
 		
-		int[][] X = this.list2Matriz();
+		int[][] X = this.list2Matriz(this.imagenesEntrenamiento);
 
 		// Obtengo matriz de covarianza
 		logger.info("------- CALCULO CONVARIANZA -------");
@@ -85,13 +99,18 @@ public class PCA {
 		return W;
 	}
 	
-	private int [][] list2Matriz() throws Exception{
+	/**
+	 * Convierte la lista de enteros a matriz
+	 * @return
+	 * @throws Exception
+	 */
+	private int [][] list2Matriz(List<int[]> imagenes) throws Exception{
 		if (imagenes == null || imagenes.isEmpty()){
 			throw new Exception ("No hay imagenes cargadas.");
 		}
 		
-		int m = this.imagenes.get(0).length;	// Rows
-		int n = this.imagenes.size();			// Cols
+		int m = imagenes.get(0).length;		// Rows
+		int n = imagenes.size();			// Cols
 		
 		int[][] X = new int[m][n];
 
@@ -105,5 +124,23 @@ public class PCA {
 		
 		return X;
 	}
+
 	
+	public void prepararMatrizXReferencia () throws Exception{
+		long ini = 0;
+		long fin = 0;
+		
+		int[][] _X = this.list2Matriz(this.imagenesReferencia);
+
+		double[] media = MathsUtils.getMediaMatriz (_X);
+		double[] desvio = MathsUtils.getDesvioStdMatriz (_X);
+		
+		// Obtengo la matriz con los vectores normalizados
+		double[][] Z = MathsUtils.getNormalization(_X, media, desvio);
+		
+		// Obtengo la matriz X para luego utilizarla en la proyeccion
+		Matrix X = MathsUtils.getMatrizNormalizadaMenosMedia(Z, media); // TODO: PARA MI ESTO NO VA... DSP LO CHARLAMOS...
+				
+		this.X = X;
+	}
 }
