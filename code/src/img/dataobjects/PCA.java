@@ -22,23 +22,6 @@ public class PCA {
 	private Matrix W;	// 	Matriz de proyeccion de PCA
 	private Matrix X;	//	Matriz prepara con las imagenes de referencia
 
-	public List<int[]> getImagenesEntrenamiento() {
-		return imagenesEntrenamiento;
-	}
-
-	public void setImagenesEntrenamiento (List<int[]> imagenesEntrenamiento) {
-		this.imagenesEntrenamiento = imagenesEntrenamiento;
-	}
-	
-	public Matrix getW() {
-		return W;
-	}
-
-	public void setW(Matrix W) {
-		this.W = W;
-	}
-
-	
 	public PCA(String dirPathEntrenamiento, String dirPathReferencia) {
 		logger.info(dirPathEntrenamiento);
 		this.imagenesEntrenamiento = new ArrayList<int[]>();
@@ -47,6 +30,27 @@ public class PCA {
 		this.leer (dirPathReferencia, this.imagenesReferencia);
 	}
 
+	public Matrix getW() {
+		return W;
+	}
+
+	public void setW(Matrix W) {
+		this.W = W;
+	}
+	
+	public Matrix getX() {
+		return X;
+	}
+	
+	public void setX(Matrix x) {
+		X = x;
+	}
+	
+	/**
+	 * Prepara las imagenes de entrenamiento o referencia 
+	 * @param dirPath
+	 * @param imagenes
+	 */
 	private void leer(String dirPath, List<int[]> imagenes) {
 		File folder = new File(dirPath);
 	    File[] listOfFiles = folder.listFiles();
@@ -125,7 +129,10 @@ public class PCA {
 		return X;
 	}
 
-	
+	/**
+	 * Armo la matriz de referencia con las imagenes normalizadas como vectores
+	 * @throws Exception
+	 */
 	public void prepararMatrizXReferencia () throws Exception{
 		long ini = 0;
 		long fin = 0;
