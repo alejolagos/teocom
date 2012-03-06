@@ -1,7 +1,5 @@
 package img.dataobjects;
 
-import static org.math.array.StatisticSample.mean;
-import static org.math.array.StatisticSample.stddeviation;
 import img.constants.Globals;
 import img.utils.CommonsUtils;
 import img.utils.MathsUtils;
@@ -19,14 +17,19 @@ public class PCA {
 	private List<int[]> imagenesEntrenamiento;
 	private List<int[]> imagenesReferencia;
 
+	private int superIndex;
+
 	private Matrix W;	// 	Matriz de proyeccion de PCA
-	private Matrix X;	//	Matriz prepara con las imagenes de referencia
+	private Matrix X;	//	Matriz preparada con las imagenes de referencia
+	
+	private Matrix Y; //Todas las imagenes proyectadas en el subespacio de 'caras'
 
 	public PCA(String dirPathEntrenamiento, String dirPathReferencia) {
 		logger.info(dirPathEntrenamiento);
 		this.imagenesEntrenamiento = new ArrayList<int[]>();
 		this.imagenesReferencia = new ArrayList<int[]>();
 		this.leer (dirPathEntrenamiento, this.imagenesEntrenamiento);
+		superIndex = 0;
 		this.leer (dirPathReferencia, this.imagenesReferencia);
 	}
 
@@ -46,23 +49,34 @@ public class PCA {
 		X = x;
 	}
 	
+	public Matrix getY() {
+		return Y;
+	}
+
+	public void setY(Matrix y) {
+		Y = y;
+	}
+
 	/**
 	 * Prepara las imagenes de entrenamiento o referencia 
 	 * @param dirPath
 	 * @param imagenes
 	 */
-	private void leer(String dirPath, List<int[]> imagenes) {
+	public void leer(String dirPath, List<int[]> imagenes) {
 		File folder = new File(dirPath);
 	    File[] listOfFiles = folder.listFiles();
 
 	    for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
-				PGM imagen = new PGM(dirPath+"\\"+listOfFiles[i].getName());
-				imagenes.add(imagen.getPixelArray());
-			} 
-			else if (listOfFiles[i].isDirectory()) {
-				leer(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
-			}
+	    	if (!listOfFiles[i].isHidden()) {
+				if (listOfFiles[i].isFile()) {
+					PGM imagen = new PGM(dirPath+"\\"+listOfFiles[i].getName());
+					imagenes.add(imagen.getPixelArray());
+					superIndex++;
+				} 
+				else if (listOfFiles[i].isDirectory()) {
+					leer(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
+				}
+	    	}
 		}
 }
 	
@@ -134,9 +148,6 @@ public class PCA {
 	 * @throws Exception
 	 */
 	public void prepararMatrizXReferencia () throws Exception{
-		long ini = 0;
-		long fin = 0;
-		
 		int[][] _X = this.list2Matriz(this.imagenesReferencia);
 
 		double[] media = MathsUtils.getMediaMatriz (_X);
@@ -150,4 +161,28 @@ public class PCA {
 				
 		this.X = X;
 	}
+	
+	/**
+	 * yi = Wpca(traspuesta)*xi
+	 * 
+	 */
+	public void proyectarImagenesDeReferencia() {
+		Matrix Wtrans = this.W.transpose();
+		this.Y = Wtrans.times(this.X);
+	}
+	
+	public Matrix pasarAEigenface(List<int[]> _nuevasImagenes) throws Exception {
+		int[][] nuevasImagenes = this.list2Matriz(_nuevasImagenes);
+		double[] media = MathsUtils.getMediaMatriz (nuevasImagenes);
+		double[] desvio = MathsUtils.getDesvioStdMatriz (nuevasImagenes);
+		
+		// Obtengo la matriz con los vectores normalizados
+		double[][] Z = MathsUtils.getNormalization(nuevasImagenes, media, desvio);
+		
+		// Obtengo la matriz X para luego utilizarla en la proyeccion
+		Matrix nuevaImagenMatriz = MathsUtils.getMatrizNormalizadaMenosMedia(Z, media); // TODO: PARA MI ESTO NO VA... DSP LO CHARLAMOS...
+		Matrix Wtrans = this.W.transpose();
+		return Wtrans.times(nuevaImagenMatriz);
+	}
+	
 }
