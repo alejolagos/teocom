@@ -345,6 +345,28 @@ public class PGM
 
 		return array;
 	}
+	
+	/**
+	 * Devuelve una lista de ints correspondientes a la matriz de pixeles en double
+	 */
+	public double[] getPixelArrayDouble() {
+		double array[] = new double[Rows*Columns];
+		int contArray = 0;
+		int i = 0;
+		int j = 0;
+		
+		while (i<Pixels.length) {
+			j = 0;
+			while (j<Pixels[i].length) {
+				array[contArray] = Pixels[i][j];
+				contArray++; 
+				j++;
+			}
+			i++;
+		}
+
+		return array;
+	}	
 
 	//static methods
 	public static int getRGBValue(int tred,int tgreen,int tblue)
