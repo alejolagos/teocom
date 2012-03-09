@@ -15,8 +15,8 @@ import Jama.Matrix;
 public class NuevoPCA {
 	private static Logger logger = Logger.getLogger(PCA.class.getSimpleName());
 	private List<int[]> imagenesEntrenamiento;
-	private List<Imagen> imagenesReferencia;
-	private double[] media;
+	private List<Imagen> imagenesReferencia;//Basicamente es la base de datos de la aplicación.
+	private double[] media; //media de la matriz generada con las imagenes de entrenamiento
 
 	private Matrix W;	// 	Matriz de proyeccion de PCA
 	private Matrix X;	//	Matriz preparada con las imagenes de referencia
@@ -170,7 +170,7 @@ public class NuevoPCA {
 		return X;
 	}
 
-	//VA
+	//Pasa el vector que esta dentro de imagen al espacio de 'caras' (o sea, le resta la media y lo multiplica por W)
 	public void pasarAEigenface(Imagen imagen) throws Exception {
 		double[][] x_menos_media = new double[imagen.getImagen().length][1];
 
@@ -183,11 +183,10 @@ public class NuevoPCA {
 		Matrix Wtrans = this.W.transpose();
 		Matrix imagenEnEigenface = Wtrans.times(imagenMatriz);
 		
-		//TODO: ESTO ME DEVUELVE UN ARRAY DE DIMENSION 200, ESTA BIEN?????
 		imagen.setImagen(imagenEnEigenface.getRowPackedCopy());
 	}
 	
-	//VA
+	//TODO: Esto habria que emprolijarlo un toque.
 	public void generarImagenesDeReferencia(String dirImagenesDeReferencia) throws Exception {
 		imagenesReferencia = new ArrayList<Imagen>();
 		this.leerAImagen(dirImagenesDeReferencia, imagenesReferencia);
