@@ -1,9 +1,5 @@
 package img.utils;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
-
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
@@ -156,5 +152,18 @@ public class MathsUtils {
 		return new Matrix(z_menos_u);
 	}
 	
+	/**
+	 * Devuelve la distancia euclideana entre los dos vectores	
+	 */
+	public static double distanciaEntreVectores(double[] array1, double[] array2) {
+		double distancia;
+		double suma = 0;
+		for (int i = 0; i < array1.length; i++) {
+			suma = suma + ( (array1[i] - array2[i]) * (array1[i] - array2[i]) );
+		}
+		distancia = Math.sqrt(suma);
+		return distancia;
+	}
+		
 	
 }

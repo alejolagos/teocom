@@ -3,6 +3,7 @@ package img.main;
 import img.dataobjects.Imagen;
 import img.dataobjects.NuevoPCA;
 import img.dataobjects.PCA;
+import img.utils.MathsUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +85,7 @@ public class MainTest {
 			double aux;
 			
 			for (Imagen imagenBase : pca.getImagenesReferencia()) {
-				aux = MainTest.distancia(imagenBase.getImagen(), imagenTest.getImagen());
+				aux = MathsUtils.distanciaEntreVectores(imagenBase.getImagen(), imagenTest.getImagen());
 				if (aux < distanciaMenor) {
 					distanciaMenor = aux;
 					distanciaMenorNombre = imagenBase.getNombre();
@@ -110,17 +111,5 @@ public class MainTest {
 		}
 		return imagenTest;
 	}
-	
-	private static double distancia(double[] array1, double[] array2) {
-		double distancia;
-		double suma = 0;
-		for (int i = 0; i < array1.length; i++) {
-			suma = suma + ( (array1[i] - array2[i]) * (array1[i] - array2[i]) );
-		}
-		distancia = Math.sqrt(suma);
-		return distancia;
-	}
-		
-
 	
 }
