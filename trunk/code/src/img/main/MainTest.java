@@ -48,7 +48,7 @@ public class MainTest {
 
 			for (int i = 0; i < pca.getY().getColumnDimension(); i++) {
 				double[] imagenMatriz = MainTest.matrizToArray(i, pca.getY());
-				aux = MainTest.distancia(imagenMatriz, imagenTest);
+				aux = MathsUtils.distanciaEntreVectores(imagenMatriz, imagenTest);
 				if (aux < distanciaMenor) {
 					distanciaMenor = aux;
 					indexMenor = i;
