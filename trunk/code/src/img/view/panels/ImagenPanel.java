@@ -2,7 +2,9 @@ package img.view.panels;
 
 import img.dataobjects.PGM;
 
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.io.File;
 
@@ -15,8 +17,21 @@ public class ImagenPanel extends JPanel {
 	private File testFile;
 	private File resultFile;
 	
+	private static int WIDTH_PANEL = 200;
+	private static int HEIGHT_PANEL= 96;
+	private static int WIDTH_IMG = 32;
+	private static int HEIGHT_IMG= 32;
+	private static int POS_X_TITULO_TEST = 20;
+	private static int POS_Y_TITULO_TEST = 22;
+	private static int POS_X_TITULO_RESU = 126;
+	private static int POS_Y_TITULO_RESU = 22;
+	private static int POS_X_IMAGEN_TEST = 34;
+	private static int POS_Y_IMAGEN_TEST = 32;
+	private static int POS_X_IMAGEN_RESU = 134;
+	private static int POS_Y_IMAGEN_RESU = 32;
+	
 	public ImagenPanel (){
-		Dimension d = new Dimension(64, 32);
+		Dimension d = new Dimension(WIDTH_PANEL, HEIGHT_PANEL);
 		this.setSize(d);
 	}
 	
@@ -29,23 +44,28 @@ public class ImagenPanel extends JPanel {
 	}
 	
 	public void paintComponent (Graphics g){
-		if (testFile == null){
-			g.clearRect(0, 0, 32, 32);
-		}
-		else{
+		g.clearRect(0, 0, WIDTH_PANEL, HEIGHT_PANEL);
+		g.drawRect(0, 0, WIDTH_PANEL, HEIGHT_PANEL);
+		
+		g.setFont( new Font("Arial",Font.BOLD, 16));
+		g.setColor(Color.BLUE);
+		g.drawString("Entrada", POS_X_TITULO_TEST, POS_Y_TITULO_TEST);
+
+		g.setFont( new Font("Arial",Font.BOLD, 16));
+		g.setColor(Color.RED);
+		g.drawString("Salida", POS_X_TITULO_RESU, POS_Y_TITULO_RESU);
+	
+		if (testFile != null){
 			PGM pgm = new PGM(testFile.getAbsolutePath());
 			ImageIcon imagen = new ImageIcon(pgm.pgm2jpeg().toByteArray());
-			g.drawImage(imagen.getImage(), 0, 0, pgm.getColumns(), pgm.getRows(), null);
+			g.drawImage(imagen.getImage(), POS_X_IMAGEN_TEST, POS_Y_IMAGEN_TEST, WIDTH_IMG, HEIGHT_IMG, null);
 			setOpaque(false);
 		}
 
-		if (resultFile == null){
-			g.clearRect(32, 0, 32, 32);
-		}
-		else{
+		if (resultFile != null){
 			PGM pgm = new PGM(resultFile.getAbsolutePath());
 			ImageIcon imagen = new ImageIcon(pgm.pgm2jpeg().toByteArray());
-			g.drawImage(imagen.getImage(), 32, 0, pgm.getColumns(), pgm.getRows(), null);
+			g.drawImage(imagen.getImage(), POS_X_IMAGEN_RESU, POS_Y_IMAGEN_RESU, WIDTH_IMG, HEIGHT_IMG, null);
 			setOpaque(false);
 		}
 	}

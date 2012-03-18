@@ -1,5 +1,6 @@
 package img.view.actions;
 
+import img.view.filters.PGMFilter;
 import img.view.frames.EntradaFrame;
 
 import java.awt.event.ActionEvent;
@@ -23,11 +24,6 @@ public class OpenFileAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent evt) {
-    	// Show dialog; this method does not return until dialog is closed
-//	    	chooser.showOpenDialog(frame);
-//	    	file = chooser.getSelectedFile();
-
-//	    	// Show the dialog; wait until dialog is closed
     	int result = chooser.showOpenDialog(frame);
 
     	// Determine which button was clicked to close the dialog
@@ -35,8 +31,15 @@ public class OpenFileAction extends AbstractAction {
     		case JFileChooser.APPROVE_OPTION:
 	            // Approve (Open or Save) was clicked
     			file = chooser.getSelectedFile();
-    			((EntradaFrame)frame).setSelectedFile(file);
-    			((EntradaFrame)frame).mostrarImagenTest();
+    			
+//    			if ( ((PGMFilter) (chooser.getFileFilter())).accept(file) ) {
+    			if ( file != null && file.getName().endsWith(PGMFilter.getExtensionFilter()) ) {
+	    			((EntradaFrame)frame).setSelectedFile(file);
+	    			((EntradaFrame)frame).mostrarImagenTest();
+    			}
+    			else{
+    				((EntradaFrame)frame).errorArchivoTestSeleccionado(file);
+    			}
     			break;
     		case JFileChooser.CANCEL_OPTION:
 				// Cancel or the close-dialog icon was clicked
@@ -45,8 +48,6 @@ public class OpenFileAction extends AbstractAction {
 				// The selection process did not complete successfully
 				break;
         }
-        
-        // Get the selected file
-        
     }
+    
 }
