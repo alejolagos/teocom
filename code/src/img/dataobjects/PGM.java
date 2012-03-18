@@ -3,8 +3,11 @@ package img.dataobjects;
 import img.constants.Globals;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class PGM
 {
@@ -372,5 +375,30 @@ public class PGM
 	public static int getRGBValue(int tred,int tgreen,int tblue)
 	{
 		return((tred<<16)+(tgreen<<8)+tblue);
+	}
+	
+	/**
+	 * Devuelve un ByteArrayOutputStream para ser mostrado como jpg
+	 */
+	public ByteArrayOutputStream pgm2jpeg (){
+		int[] myImage = getPixelArray();
+		BufferedImage im = getBufferedImage();
+		WritableRaster raster = im.getRaster();
+		
+		for(int h=0;h < getRows(); h++){
+		    for(int w=0; w < getColumns(); w++){
+		        raster.setSample(w,h,0, myImage[h * getRows() + w]); 
+		    }
+		}
+
+		ByteArrayOutputStream myJpg = new ByteArrayOutputStream();
+		try {
+			javax.imageio.ImageIO.write(im, "jpg", myJpg);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return myJpg;
 	}
 }

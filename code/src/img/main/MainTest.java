@@ -4,7 +4,7 @@ import img.dataobjects.Imagen;
 import img.dataobjects.NuevoPCA;
 import img.dataobjects.PCA;
 import img.utils.MathsUtils;
-import img.view.EntradaFrame;
+import img.view.frames.EntradaFrame;
 
 import java.util.ArrayList;
 import java.util.List;
