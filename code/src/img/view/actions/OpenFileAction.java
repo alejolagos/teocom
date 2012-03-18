@@ -36,7 +36,7 @@ public class OpenFileAction extends AbstractAction {
 	            // Approve (Open or Save) was clicked
     			file = chooser.getSelectedFile();
     			((EntradaFrame)frame).setSelectedFile(file);
-    			((EntradaFrame)frame).mostrarImagen();
+    			((EntradaFrame)frame).mostrarImagenTest();
     			break;
     		case JFileChooser.CANCEL_OPTION:
 				// Cancel or the close-dialog icon was clicked

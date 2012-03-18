@@ -26,8 +26,9 @@ public class EntradaFrame extends JFrame {
 	//   private static String TEXTO_ABRIR = "Seleccionar Imagen de Test";
 	private static String TEXTO_ABRIR = "Examinar...";
 	private NuevoPCA pca;
-	private ImagenPanel panelImagen;
+	private ImagenPanel panelImagenTest;
 	private File selectedFile;
+	private Imagen resultFile;
    
 	public EntradaFrame(NuevoPCA pca) {
 		super("Entrada");
@@ -48,8 +49,8 @@ public class EntradaFrame extends JFrame {
 		JPanel panelBotones = new JPanel();
 		panelBotones.add(botonAbrir);
 
-		panelImagen = new ImagenPanel(null);
-		panelImagen.setVisible(false);
+		panelImagenTest = new ImagenPanel();
+		panelImagenTest.setVisible(false);
 
 		JButton botonAceptar = new JButton(acceptAction);
 		botonAceptar.setText("Aceptar");
@@ -59,7 +60,7 @@ public class EntradaFrame extends JFrame {
 		// obtener panel de contenido
 		Container contenedor = getContentPane();
 		contenedor.add(panelBotones, BorderLayout.EAST);
-		contenedor.add(panelImagen, BorderLayout.CENTER);
+		contenedor.add(panelImagenTest, BorderLayout.CENTER);
 		contenedor.add(panelAceptar, BorderLayout.SOUTH);
 
 		setSize(300, 200);
@@ -95,10 +96,21 @@ public class EntradaFrame extends JFrame {
 				if (aux < distanciaMenor) {
 					distanciaMenor = aux;
 					distanciaMenorNombre = imagenBase.getNombre();
+					this.resultFile = imagenBase;
 				}
 			}
 			
-			System.out.println(distanciaMenorNombre);
+			//
+			if (resultFile != null && resultFile.getNombre() != null && !resultFile.getNombre().equals("")){
+				this.mostrarImagenResult();
+				System.out.println(distanciaMenorNombre);
+			}
+			else{
+				// mostrar no encontrado
+				System.out.println("NO ENCONTRADO");
+			}
+				
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -112,11 +124,27 @@ public class EntradaFrame extends JFrame {
 	public void setSelectedFile(File selectedFile) {
 		this.selectedFile = selectedFile;
 	}
-  
-	public void mostrarImagen(){
-		panelImagen.setSelectedFile(selectedFile);
-		panelImagen.paint(panelImagen.getGraphics());
-		panelImagen.setVisible(false);
+	
+	public Imagen getResultFile() {
+		return resultFile;
+	}
+
+	public void setResultFile(Imagen resultFile) {
+		this.resultFile = resultFile;
+	}
+
+	public void mostrarImagenTest(){
+		panelImagenTest.setTestFile(selectedFile);
+		panelImagenTest.paint(panelImagenTest.getGraphics());
+		panelImagenTest.setVisible(true);
+	}
+
+	public void mostrarImagenResult(){
+		File resultFile = new File (this.resultFile.getNombre());
+		panelImagenTest.setResultFile(resultFile);
+		panelImagenTest.paint(panelImagenTest.getGraphics());
+		panelImagenTest.setVisible(true);
+		panelImagenTest.setResultFile(null);
 	}
 	
    	
