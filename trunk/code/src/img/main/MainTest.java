@@ -4,11 +4,14 @@ import img.dataobjects.Imagen;
 import img.dataobjects.NuevoPCA;
 import img.dataobjects.PCA;
 import img.utils.MathsUtils;
+import img.view.EntradaFrame;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JFrame;
 
 import org.math.plot.utils.Array;
 
@@ -66,6 +69,7 @@ public class MainTest {
 	}
 	
 	public static void main(String[] args) {
+		   
 		// TODO Auto-generated method stub
 		NuevoPCA pca = new NuevoPCA("C:\\teocom\\entrenamiento\\");
 		try {
@@ -75,24 +79,26 @@ public class MainTest {
 			
 			pca.generarImagenesDeReferencia("C:\\teocom\\referencia\\");
 			
-			List<Imagen> imagenes = new ArrayList<Imagen>();
-			pca.leerAImagen("C:\\teocom\\test\\", imagenes );
-			Imagen imagenTest = imagenes.get(0);
-			pca.pasarAEigenface(imagenTest);
-
-			String distanciaMenorNombre = "";
-			double distanciaMenor = 99999;
-			double aux;
-			
-			for (Imagen imagenBase : pca.getImagenesReferencia()) {
-				aux = MathsUtils.distanciaEntreVectores(imagenBase.getImagen(), imagenTest.getImagen());
-				if (aux < distanciaMenor) {
-					distanciaMenor = aux;
-					distanciaMenorNombre = imagenBase.getNombre();
-				}
-			}
-			
-			System.out.println(distanciaMenorNombre);
+			EntradaFrame aplicacion = new EntradaFrame(pca);
+			aplicacion.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+//			List<Imagen> imagenes = new ArrayList<Imagen>();
+//			pca.leerAImagen("C:\\teocom\\test\\", imagenes );
+//			Imagen imagenTest = imagenes.get(0);
+//			pca.pasarAEigenface(imagenTest);
+//
+//			String distanciaMenorNombre = "";
+//			double distanciaMenor = 99999;
+//			double aux;
+//			
+//			for (Imagen imagenBase : pca.getImagenesReferencia()) {
+//				aux = MathsUtils.distanciaEntreVectores(imagenBase.getImagen(), imagenTest.getImagen());
+//				if (aux < distanciaMenor) {
+//					distanciaMenor = aux;
+//					distanciaMenorNombre = imagenBase.getNombre();
+//				}
+//			}
+//			
+//			System.out.println(distanciaMenorNombre);
 						
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
