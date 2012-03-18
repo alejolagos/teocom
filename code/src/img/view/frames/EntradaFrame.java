@@ -11,6 +11,7 @@ import img.view.filters.PGMFilter;
 import img.view.panels.ImagenPanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Container;
 import java.io.File;
 
@@ -37,8 +38,8 @@ public class EntradaFrame extends JFrame {
 
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("C:\\teocom\\test\\"));
-		// chooser.setAcceptAllFileFilterUsed(false);
-		chooser.setFileFilter(new PGMFilter());
+		chooser.addChoosableFileFilter(new PGMFilter());
+//		chooser.setFileFilter(new PGMFilter());
 		chooser.setDialogTitle(TEXTO_ABRIR);
 
 		Action openAction = new OpenFileAction(this, chooser);
@@ -50,7 +51,6 @@ public class EntradaFrame extends JFrame {
 		panelBotones.add(botonAbrir);
 
 		panelImagenTest = new ImagenPanel();
-		panelImagenTest.setVisible(false);
 
 		JButton botonAceptar = new JButton(acceptAction);
 		botonAceptar.setText("Aceptar");
@@ -63,9 +63,10 @@ public class EntradaFrame extends JFrame {
 		contenedor.add(panelImagenTest, BorderLayout.CENTER);
 		contenedor.add(panelAceptar, BorderLayout.SOUTH);
 
-		setSize(300, 200);
+		setSize(400, 200);
 		setVisible(true);
 		setLocationRelativeTo(null);
+		
 
 	} // fin del constructor de DemoPanel
 
@@ -145,6 +146,11 @@ public class EntradaFrame extends JFrame {
 		panelImagenTest.paint(panelImagenTest.getGraphics());
 		panelImagenTest.setVisible(true);
 		panelImagenTest.setResultFile(null);
+	}
+
+	public void errorArchivoTestSeleccionado(File file) {
+		// TODO
+		System.out.println("Error archivo seleccionado...");
 	}
 	
    	

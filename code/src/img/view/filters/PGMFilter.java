@@ -11,4 +11,7 @@ public class PGMFilter extends javax.swing.filechooser.FileFilter {
         return "*.pgm";
     }
     
+    public static String getExtensionFilter(){
+    	return ".pgm";
+    }
 }
