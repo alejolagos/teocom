@@ -17,10 +17,10 @@ public class ImagenPanel extends JPanel {
 	private File testFile;
 	private File resultFile;
 	
-	private static int WIDTH_PANEL = 200;
-	private static int HEIGHT_PANEL= 96;
-	private static int WIDTH_IMG = 32;
-	private static int HEIGHT_IMG= 32;
+	private static int WIDTH_PANEL = 400;
+	private static int HEIGHT_PANEL= 400;
+	private static int WIDTH_IMG  = 92;
+	private static int HEIGHT_IMG = 112;
 	private static int POS_X_TITULO_TEST = 20;
 	private static int POS_Y_TITULO_TEST = 22;
 	private static int POS_X_TITULO_RESU = 126;
