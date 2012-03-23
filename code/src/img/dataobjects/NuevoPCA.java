@@ -110,7 +110,7 @@ public class NuevoPCA {
 	 * @return
 	 * @throws Exception
 	 */
-	public Matrix entrenar() throws Exception {
+	public Matrix entrenar()  {
 		long ini = 0;
 		long fin = 0;
 		
@@ -149,9 +149,9 @@ public class NuevoPCA {
 	 * @return
 	 * @throws Exception
 	 */
-	private int [][] list2Matriz(List<int[]> imagenes) throws Exception{
+	private int [][] list2Matriz(List<int[]> imagenes) {
 		if (imagenes == null || imagenes.isEmpty()){
-			throw new Exception ("No hay imagenes cargadas.");
+			throw new RuntimeException("No hay imagenes cargadas.");
 		}
 		
 		int m = imagenes.get(0).length;		// Rows
@@ -171,7 +171,7 @@ public class NuevoPCA {
 	}
 
 	//Pasa el vector que esta dentro de imagen al espacio de 'caras' (o sea, le resta la media y lo multiplica por W)
-	public void pasarAEigenface(Imagen imagen) throws Exception {
+	public void pasarAEigenface(Imagen imagen) {
 		double[][] x_menos_media = new double[imagen.getImagen().length][1];
 
 		// Preparo la X menos la media
@@ -187,7 +187,7 @@ public class NuevoPCA {
 	}
 	
 	//TODO: Esto habria que emprolijarlo un toque.
-	public void generarImagenesDeReferencia(String dirImagenesDeReferencia) throws Exception {
+	public void generarImagenesDeReferencia(String dirImagenesDeReferencia) {
 		imagenesReferencia = new ArrayList<Imagen>();
 		this.leerAImagen(dirImagenesDeReferencia, imagenesReferencia);
 		for ( Imagen imagen : this.imagenesReferencia) {

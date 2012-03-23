@@ -7,6 +7,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -55,18 +56,23 @@ public class ImagenPanel extends JPanel {
 		g.setColor(Color.RED);
 		g.drawString("Salida", POS_X_TITULO_RESU, POS_Y_TITULO_RESU);
 	
-		if (testFile != null){
-			PGM pgm = new PGM(testFile.getAbsolutePath());
-			ImageIcon imagen = new ImageIcon(pgm.pgm2jpeg().toByteArray());
-			g.drawImage(imagen.getImage(), POS_X_IMAGEN_TEST, POS_Y_IMAGEN_TEST, WIDTH_IMG, HEIGHT_IMG, null);
-			setOpaque(false);
-		}
-
-		if (resultFile != null){
-			PGM pgm = new PGM(resultFile.getAbsolutePath());
-			ImageIcon imagen = new ImageIcon(pgm.pgm2jpeg().toByteArray());
-			g.drawImage(imagen.getImage(), POS_X_IMAGEN_RESU, POS_Y_IMAGEN_RESU, WIDTH_IMG, HEIGHT_IMG, null);
-			setOpaque(false);
+		try {
+			if (testFile != null){
+				PGM pgm = new PGM(testFile.getAbsolutePath());
+				ImageIcon imagen = new ImageIcon(pgm.pgm2jpegOriginal().toByteArray());
+				g.drawImage(imagen.getImage(), POS_X_IMAGEN_TEST, POS_Y_IMAGEN_TEST, WIDTH_IMG, HEIGHT_IMG, null);
+				setOpaque(false);
+			}
+	
+			if (resultFile != null){
+				PGM pgm = new PGM(resultFile.getAbsolutePath());
+				ImageIcon imagen = new ImageIcon(pgm.pgm2jpegOriginal().toByteArray());
+				g.drawImage(imagen.getImage(), POS_X_IMAGEN_RESU, POS_Y_IMAGEN_RESU, WIDTH_IMG, HEIGHT_IMG, null);
+				setOpaque(false);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
