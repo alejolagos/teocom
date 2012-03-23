@@ -1,7 +1,5 @@
 package img.main;
 
-import img.dataobjects.Imagen;
-import img.dataobjects.NuevoPCA;
 import img.dataobjects.PCA;
 import img.utils.MathsUtils;
 import img.view.frames.EntradaFrame;
@@ -12,8 +10,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.swing.JFrame;
-
-import org.math.plot.utils.Array;
 
 import Jama.Matrix;
 
@@ -71,16 +67,8 @@ public class MainTest {
 	public static void main(String[] args) {
 		   
 		// TODO Auto-generated method stub
-		NuevoPCA pca = new NuevoPCA("C:\\teocom\\entrenamiento\\");
-		try {
-			logger.info("-------- INICIO ENTRENAMIENTO --------");
-			pca.entrenar();
-			logger.info("--------  FIN ENTRENAMIENTO --------");
-			
-			pca.generarImagenesDeReferencia("C:\\teocom\\referencia\\");
-			
-			EntradaFrame aplicacion = new EntradaFrame(pca);
-			aplicacion.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		EntradaFrame aplicacion = new EntradaFrame();
+		aplicacion.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 //			List<Imagen> imagenes = new ArrayList<Imagen>();
 //			pca.leerAImagen("C:\\teocom\\test\\", imagenes );
 //			Imagen imagenTest = imagenes.get(0);
@@ -100,11 +88,6 @@ public class MainTest {
 //			
 //			System.out.println(distanciaMenorNombre);
 						
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.log(Level.SEVERE, "Error critico, no puede ejecutarse la aplicacion." + e.getCause());
-			e.printStackTrace();
-		}
 		
 	}
 

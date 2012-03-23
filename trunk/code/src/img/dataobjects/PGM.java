@@ -4,7 +4,6 @@ import img.constants.Globals;
 import img.main.ResizerUtil;
 
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -12,8 +11,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import javax.imageio.ImageIO;
 
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
@@ -31,8 +28,9 @@ public class PGM
 	//pgm imagedata
 	private int[][] Pixels;
 	
-    private int width, height; 
-    private String type;
+	private String typeFile;
+	private int widthFile;
+	private int heightFile;
 	
 	//constructors
 	public PGM()
@@ -49,7 +47,12 @@ public class PGM
 	public PGM(String tpath)
 	{
 		FilePath=tpath;
-		readImage();
+		try {
+			readImage();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public PGM(int tColumns,int tRows)
@@ -163,7 +166,7 @@ public class PGM
 	}
 	
 	//methods
-	public void readImage()
+	public void readImage() throws IOException
 	{
 		InputStream fin = leerYResizear(FilePath);
 		this.readImage(fin);
@@ -401,20 +404,33 @@ public class PGM
 	/**
 	 * Devuelve un ByteArrayOutputStream para ser mostrado como jpg
 	 */
-	public ByteArrayOutputStream pgm2jpeg (){
-		int[] myImage = getPixelArray();
-		BufferedImage im = getBufferedImage();
-		WritableRaster raster = im.getRaster();
-		
-		for(int h=0;h < getRows(); h++){
-		    for(int w=0; w < getColumns(); w++){
-		        raster.setSample(w,h,0, myImage[h * getRows() + w]); 
-		    }
-		}
+	public ByteArrayOutputStream pgm2jpegOriginal () throws IOException {
+		FileInputStream fis = null;
+		BufferedInputStream bis = null;
+		fis = new FileInputStream(this.FilePath);
+		bis = new BufferedInputStream(fis);
 
+		readHeader(bis);
+		if (!typeFile.equals("P5")) {
+			throw new IOException("I can't know this type.");
+		}
+		BufferedImage bufimage = new BufferedImage(widthFile, heightFile, BufferedImage.TYPE_3BYTE_BGR);
+		int outX, outY;
+		int i = -1;
+		outX = 0;
+		outY = 0;
+		while ((i = bis.read()) != -1) {
+			bufimage.setRGB(outX, outY, (((i << 8) | i) | (i << 16)));
+			outX = outX + 1;
+			if (outX == widthFile) {
+				outX = 0;
+				outY = outY + 1;
+			}
+		}
+		
 		ByteArrayOutputStream myJpg = new ByteArrayOutputStream();
 		try {
-			javax.imageio.ImageIO.write(im, "jpg", myJpg);
+			javax.imageio.ImageIO.write(bufimage, "jpg", myJpg);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -423,19 +439,18 @@ public class PGM
 		return myJpg;
 	}
 	
-	private ByteArrayInputStream leerYResizear(String strFilePath)
+	private ByteArrayInputStream leerYResizear(String strFilePath) throws IOException
 	{
-		try {
 			FileInputStream fis = null;
 			BufferedInputStream bis = null;
 			fis = new FileInputStream(strFilePath);
 			bis = new BufferedInputStream(fis);
 
 			readHeader(bis);
-			if (!type.equals("P5")) {
-				throw new Exception("I can't know this type.");
+			if (!typeFile.equals("P5")) {
+				throw new IOException("I can't know this type.");
 			}
-			BufferedImage bufimage = new BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR);
+			BufferedImage bufimage = new BufferedImage(widthFile, heightFile, BufferedImage.TYPE_3BYTE_BGR);
 			int outX, outY;
 			int i = -1;
 			outX = 0;
@@ -443,7 +458,7 @@ public class PGM
 			while ((i = bis.read()) != -1) {
 				bufimage.setRGB(outX, outY, (((i << 8) | i) | (i << 16)));
 				outX = outX + 1;
-				if (outX == width) {
+				if (outX == widthFile) {
 					outX = 0;
 					outY = outY + 1;
 				}
@@ -467,19 +482,15 @@ public class PGM
 			encoder.encode(bufferedImage);
 
 			return new ByteArrayInputStream(os.toByteArray());
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
 	}
 	
     /**
      * P5
      * 300 300
      * 100
+     * @throws IOException 
      */
-	private void readHeader(BufferedInputStream bis) throws Exception {
+	private void readHeader(BufferedInputStream bis) throws IOException {
         int iCh = 0;
         int cnt = 0;
         StringBuffer[] arrSb = new StringBuffer[4];
@@ -511,8 +522,8 @@ public class PGM
 
         bis.reset();
 
-        type = new String(arrSb[0]);
-        width = Integer.parseInt(new String(arrSb[1]));
-        height = Integer.parseInt(new String(arrSb[2]));
+        typeFile = new String(arrSb[0]);
+        widthFile = Integer.parseInt(new String(arrSb[1]));
+        heightFile = Integer.parseInt(new String(arrSb[2]));
     }
 }

@@ -11,14 +11,15 @@ import img.view.filters.PGMFilter;
 import img.view.panels.ImagenPanel;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Container;
 import java.io.File;
+import java.util.logging.Logger;
 
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class EntradaFrame extends JFrame {
@@ -30,16 +31,43 @@ public class EntradaFrame extends JFrame {
 	private ImagenPanel panelImagenTest;
 	private File selectedFile;
 	private Imagen resultFile;
+	
+	private static Logger logger = Logger.getLogger(EntradaFrame.class.getSimpleName());
    
-	public EntradaFrame(NuevoPCA pca) {
+	public EntradaFrame() {
 		super("Entrada");
 
-		this.pca = pca;
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800, 500);
+		setVisible(true);
+		setLocationRelativeTo(null);
+		
+		JLabel label1 = new JLabel("INICIALIZANDO APLICACIÓN...", JLabel.CENTER);
+		label1.setVerticalTextPosition(JLabel.BOTTOM);
+		label1.setHorizontalTextPosition(JLabel.CENTER);
+		
+		// obtener panel de contenido
+		Container contenedor = getContentPane();
+		contenedor.add(label1);
+		
+		this.pca = new NuevoPCA("C:\\teocom\\entrenamiento\\");
+		logger.info("-------- INICIO ENTRENAMIENTO --------");
+		label1.setText("ENTRENANDO AL SISTEMA...");
+		this.repaint();
+		pca.entrenar();
+		logger.info("--------  FIN ENTRENAMIENTO --------");
+		
+		label1.setText("GENERANDO BASE DE DATOS...");
+		this.repaint();
+			
+		pca.generarImagenesDeReferencia("C:\\teocom\\referencia\\");
+		
+		label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");
+		this.repaint();
 
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("C:\\teocom\\test\\"));
 		chooser.addChoosableFileFilter(new PGMFilter());
-//		chooser.setFileFilter(new PGMFilter());
 		chooser.setDialogTitle(TEXTO_ABRIR);
 
 		Action openAction = new OpenFileAction(this, chooser);
@@ -57,28 +85,29 @@ public class EntradaFrame extends JFrame {
 		JPanel panelAceptar = new JPanel();
 		panelAceptar.add(botonAceptar);
 
-		// obtener panel de contenido
-		Container contenedor = getContentPane();
+		contenedor.remove(label1);
 		contenedor.add(panelBotones, BorderLayout.EAST);
 		contenedor.add(panelImagenTest, BorderLayout.CENTER);
 		contenedor.add(panelAceptar, BorderLayout.SOUTH);
-
-		setSize(400, 200);
-		setVisible(true);
-		setLocationRelativeTo(null);
+		repintar();
 		
 
 	} // fin del constructor de DemoPanel
 
+	@SuppressWarnings("unused")
 	public static void main(String args[]) {
-		EntradaFrame aplicacion = new EntradaFrame(null);
-		aplicacion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		EntradaFrame aplicacion = new EntradaFrame();
+	}
+	
+	private void repintar() {
+		// Tengo qeu hacer estas 3 cosas para que se repinte :S
+		getContentPane().repaint();
+		setVisible(false);
+		setVisible(true);
 	}
 
    
    	public void trabajarImagenTest (){
-//		pca.leerAImagen("C:\\teocom\\test\\", imagenes );
-		
 		PGM imagenPGM = new PGM(selectedFile.getAbsolutePath());
 		
 		Imagen imagen = new Imagen();
