@@ -74,11 +74,11 @@ public class EntradaFrame extends JFrame {
 		this.entrenar();
 		this.crearBaseDeDatos();
 
-		contenedor.remove(panelPb);
 		this.repaint();
 
 		this.createFileChooser();
 
+		contenedor.remove(panelPb);
 		contenedor.remove(label1);
 		contenedor.add(panelBotones, BorderLayout.EAST);
 		contenedor.add(panelImagenTest, BorderLayout.CENTER);
