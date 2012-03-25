@@ -16,6 +16,11 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
@@ -38,6 +43,8 @@ public class EntradaFrame extends JFrame {
 	private Imagen resultFile;
 	
 	private static Logger logger = Logger.getLogger(EntradaFrame.class.getSimpleName());
+	
+	private Properties propFile;
    
 	private JLabel label1;
 	private int i = 0;
@@ -57,6 +64,20 @@ public class EntradaFrame extends JFrame {
 	
 	public EntradaFrame() {
 		super("Entrada");
+		
+		this.propFile = new Properties();
+	    String fileName = "config/app.properties";
+	    InputStream is;
+		try {
+			is = new FileInputStream(fileName);
+			propFile.load(is);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// Configuracion ventana
 		this.configureFrame();
@@ -228,7 +249,7 @@ public class EntradaFrame extends JFrame {
 	}
 	
 	private void entrenar(){
-		this.pca = new NuevoPCA("C:\\teocom\\entrenamiento\\");
+		this.pca = new NuevoPCA(propFile.getProperty("entrenamientoFolder"));
 		logger.info("-------- INICIO ENTRENAMIENTO --------");
 		label1.setText("ENTRENANDO AL SISTEMA...");
 		tiempoTarea = TIEMPO_TAREA_ENTRENAMIENTO * 1000 / TIEMPO_REFRESH_TIMER; 
@@ -249,14 +270,14 @@ public class EntradaFrame extends JFrame {
 		
 		this.repaint();
 			
-		pca.generarImagenesDeReferencia("C:\\teocom\\referencia\\");
+		pca.generarImagenesDeReferencia(propFile.getProperty("referenciaFolder"));
 		
 		label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");	
 	}
 	
 	private void createFileChooser(){
 		chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new File("C:\\teocom\\test\\"));
+		chooser.setCurrentDirectory(new File(propFile.getProperty("defaultTestFolder")));
 		chooser.addChoosableFileFilter(new PGMFilter());
 		chooser.setDialogTitle(TEXTO_ABRIR);
 		
