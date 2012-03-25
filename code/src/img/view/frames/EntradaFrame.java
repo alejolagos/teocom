@@ -12,6 +12,9 @@ import img.view.panels.ImagenPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -21,6 +24,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.Timer;
 
 public class EntradaFrame extends JFrame {
 	
@@ -28,70 +33,58 @@ public class EntradaFrame extends JFrame {
 	//   private static String TEXTO_ABRIR = "Seleccionar Imagen de Test";
 	private static String TEXTO_ABRIR = "Examinar...";
 	private NuevoPCA pca;
-	private ImagenPanel panelImagenTest;
+	private ImagenPanel panelImagenTest = new ImagenPanel();
 	private File selectedFile;
 	private Imagen resultFile;
 	
 	private static Logger logger = Logger.getLogger(EntradaFrame.class.getSimpleName());
    
+	private JLabel label1;
+	private int i = 0;
+	private Timer timer;
+	private JProgressBar progressBar;
+	private JPanel panelPb = new JPanel();
+	private JPanel panelBotones;
+	private JPanel panelAceptar;
+	private JFileChooser chooser;
+	private int tiempoTarea;
+	private JButton botonAbrir;
+	
+	static final int TIEMPO_REFRESH_TIMER = 500;		// milisegundos
+	static final int TIEMPO_TAREA_INICIO = 1;			// segundos
+	static final int TIEMPO_TAREA_ENTRENAMIENTO = 52;	// segundos
+	static final int TIEMPO_TAREA_BASE_DATOS = 5;		// segundos
+	
 	public EntradaFrame() {
 		super("Entrada");
 
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800, 500);
-		setVisible(true);
-		setLocationRelativeTo(null);
-		
-		JLabel label1 = new JLabel("INICIALIZANDO APLICACIÓN...", JLabel.CENTER);
-		label1.setVerticalTextPosition(JLabel.BOTTOM);
-		label1.setHorizontalTextPosition(JLabel.CENTER);
+		// Configuracion ventana
+		this.configureFrame();
+		this.createTimer();
+		this.createLabel1();
+		this.createProgressBar();
 		
 		// obtener panel de contenido
 		Container contenedor = getContentPane();
 		contenedor.add(label1);
-		
-		this.pca = new NuevoPCA("C:\\teocom\\entrenamiento\\");
-		logger.info("-------- INICIO ENTRENAMIENTO --------");
-		label1.setText("ENTRENANDO AL SISTEMA...");
-		this.repaint();
-		pca.entrenar();
-		logger.info("--------  FIN ENTRENAMIENTO --------");
-		
-		label1.setText("GENERANDO BASE DE DATOS...");
-		this.repaint();
-			
-		pca.generarImagenesDeReferencia("C:\\teocom\\referencia\\");
-		
-		label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");
+		contenedor.add(panelPb, BorderLayout.SOUTH);
+
+		// Trabajar imagenes
+		this.inicializar();
+		this.entrenar();
+		this.crearBaseDeDatos();
+
+		contenedor.remove(panelPb);
 		this.repaint();
 
-		JFileChooser chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new File("C:\\teocom\\test\\"));
-		chooser.addChoosableFileFilter(new PGMFilter());
-		chooser.setDialogTitle(TEXTO_ABRIR);
-
-		Action openAction = new OpenFileAction(this, chooser);
-		Action acceptAction = new AcceptAction(this);
-
-		JButton botonAbrir = new JButton(openAction);
-		botonAbrir.setText(TEXTO_ABRIR);
-		JPanel panelBotones = new JPanel();
-		panelBotones.add(botonAbrir);
-
-		panelImagenTest = new ImagenPanel();
-
-		JButton botonAceptar = new JButton(acceptAction);
-		botonAceptar.setText("Aceptar");
-		JPanel panelAceptar = new JPanel();
-		panelAceptar.add(botonAceptar);
+		this.createFileChooser();
 
 		contenedor.remove(label1);
 		contenedor.add(panelBotones, BorderLayout.EAST);
 		contenedor.add(panelImagenTest, BorderLayout.CENTER);
 		contenedor.add(panelAceptar, BorderLayout.SOUTH);
-		repintar();
 		
-
+		repintar();
 	} // fin del constructor de DemoPanel
 
 	@SuppressWarnings("unused")
@@ -182,5 +175,102 @@ public class EntradaFrame extends JFrame {
 		System.out.println("Error archivo seleccionado...");
 	}
 	
-   	
+	class PanelListener implements ActionListener {
+		public void actionPerformed(ActionEvent ae) {
+			
+		}
+	}
+	
+	private void configureFrame(){
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(800, 500);
+		setVisible(true);
+		setLocationRelativeTo(null);
+	}
+	
+	private void createProgressBar(){
+		progressBar = new JProgressBar(0);
+		progressBar.setValue(0);
+		progressBar.setStringPainted(true);
+		progressBar.setVisible(true);
+		panelPb.add(progressBar);
+	}
+	
+	private void createTimer(){
+		timer = new Timer(TIEMPO_REFRESH_TIMER, new ActionListener() {
+			  public void actionPerformed(ActionEvent evt) {
+				  if (i == tiempoTarea){
+					  Toolkit.getDefaultToolkit().beep();
+					  timer.stop();
+					  progressBar.setValue(0);
+				  }
+				  i++;// = i + 1;
+				  progressBar.setValue(i);
+			  }
+		});
+	}
+	
+	private void createLabel1(){
+		label1 = new JLabel();
+		label1.setHorizontalAlignment(JLabel.CENTER);
+		label1.setVisible(true);
+		label1.setVerticalTextPosition(JLabel.BOTTOM);
+		label1.setHorizontalTextPosition(JLabel.CENTER);
+	}
+	
+	private void inicializar(){
+		label1.setText("INICIALIZANDO APLICACIÓN...");
+		tiempoTarea = TIEMPO_TAREA_INICIO; 
+		progressBar.setValue(tiempoTarea);	// Porque es muy cortita
+		progressBar.setMaximum(tiempoTarea);
+		i = 0;
+		timer.start();
+	}
+	
+	private void entrenar(){
+		this.pca = new NuevoPCA("C:\\teocom\\entrenamiento\\");
+		logger.info("-------- INICIO ENTRENAMIENTO --------");
+		label1.setText("ENTRENANDO AL SISTEMA...");
+		tiempoTarea = TIEMPO_TAREA_ENTRENAMIENTO * 1000 / TIEMPO_REFRESH_TIMER; 
+		progressBar.setMaximum(tiempoTarea);
+		timer.start();
+		this.repaint();
+		
+		pca.entrenar();
+		
+		logger.info("--------  FIN ENTRENAMIENTO --------");	
+	}
+	
+	private void crearBaseDeDatos(){
+		label1.setText("GENERANDO BASE DE DATOS...");
+		tiempoTarea = TIEMPO_TAREA_BASE_DATOS * 1000 / TIEMPO_REFRESH_TIMER; 
+		progressBar.setMaximum(tiempoTarea);
+		timer.start();
+		
+		this.repaint();
+			
+		pca.generarImagenesDeReferencia("C:\\teocom\\referencia\\");
+		
+		label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");	
+	}
+	
+	private void createFileChooser(){
+		chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("C:\\teocom\\test\\"));
+		chooser.addChoosableFileFilter(new PGMFilter());
+		chooser.setDialogTitle(TEXTO_ABRIR);
+		
+		Action openAction = new OpenFileAction(this, chooser);
+		Action acceptAction = new AcceptAction(this);
+
+		botonAbrir = new JButton(openAction);
+		botonAbrir.setText(TEXTO_ABRIR);
+		panelBotones = new JPanel();
+		panelBotones.add(botonAbrir);
+		
+		JButton botonAceptar = new JButton(acceptAction);
+		botonAceptar.setText("Aceptar");
+		panelAceptar = new JPanel();
+		panelAceptar.add(botonAceptar);
+	}
 } 
