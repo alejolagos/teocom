@@ -15,22 +15,18 @@ import Jama.Matrix;
 public class PCA {
 	private static Logger logger = Logger.getLogger(PCA.class.getSimpleName());
 	private List<int[]> imagenesEntrenamiento;
-	private List<int[]> imagenesReferencia;
-
-	private int superIndex;
+	private List<Imagen> imagenesReferencia;//Basicamente es la base de datos de la aplicación.
+	private double[] media; //media de la matriz generada con las imagenes de entrenamiento
 
 	private Matrix W;	// 	Matriz de proyeccion de PCA
 	private Matrix X;	//	Matriz preparada con las imagenes de referencia
 	
 	private Matrix Y; //Todas las imagenes proyectadas en el subespacio de 'caras'
 
-	public PCA(String dirPathEntrenamiento, String dirPathReferencia) {
+	public PCA(String dirPathEntrenamiento) {
 		logger.info(dirPathEntrenamiento);
 		this.imagenesEntrenamiento = new ArrayList<int[]>();
-		this.imagenesReferencia = new ArrayList<int[]>();
 		this.leer (dirPathEntrenamiento, this.imagenesEntrenamiento);
-		superIndex = 0;
-		this.leer (dirPathReferencia, this.imagenesReferencia);
 	}
 
 	public Matrix getW() {
@@ -56,6 +52,14 @@ public class PCA {
 	public void setY(Matrix y) {
 		Y = y;
 	}
+	
+	public List<Imagen> getImagenesReferencia() {
+		return imagenesReferencia;
+	}
+
+	public void setImagenesReferencia(List<Imagen> imagenesReferencia) {
+		this.imagenesReferencia = imagenesReferencia;
+	}
 
 	/**
 	 * Prepara las imagenes de entrenamiento o referencia 
@@ -71,26 +75,49 @@ public class PCA {
 				if (listOfFiles[i].isFile()) {
 					PGM imagen = new PGM(dirPath+"\\"+listOfFiles[i].getName());
 					imagenes.add(imagen.getPixelArray());
-					superIndex++;
 				} 
 				else if (listOfFiles[i].isDirectory()) {
 					leer(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
 				}
 	    	}
 		}
-}
+	}
+	
+	public void leerAImagen(String dirPath, List<Imagen> imagenes) {
+		File folder = new File(dirPath);
+	    File[] listOfFiles = folder.listFiles();
+
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	    	if (!listOfFiles[i].isHidden()) {
+				if (listOfFiles[i].isFile()) {
+					Imagen imagen = new Imagen();
+					PGM imagenPGM = new PGM(dirPath+"\\"+listOfFiles[i].getName());
+					imagen.setImagen(imagenPGM.getPixelArrayDouble());
+					imagen.setNombre(dirPath+"\\"+listOfFiles[i].getName());
+					
+					imagenes.add(imagen);
+				} 
+				else if (listOfFiles[i].isDirectory()) {
+					leerAImagen(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
+				}
+	    	}
+		}
+	}
+	
 	
 	/**
 	 * Entrena el algoritmo PCA obteniendo la matriz de proyeccion W
 	 * @return
 	 * @throws Exception
 	 */
-	public Matrix entrenar() throws Exception {
+	public Matrix entrenar()  {
 		long ini = 0;
 		long fin = 0;
 		
 		int[][] X = this.list2Matriz(this.imagenesEntrenamiento);
 
+		media = MathsUtils.getMediaMatriz(X);
+		
 		// Obtengo matriz de covarianza
 		logger.info("------- CALCULO CONVARIANZA -------");
 		ini = System.currentTimeMillis();
@@ -122,9 +149,9 @@ public class PCA {
 	 * @return
 	 * @throws Exception
 	 */
-	private int [][] list2Matriz(List<int[]> imagenes) throws Exception{
+	private int [][] list2Matriz(List<int[]> imagenes) {
 		if (imagenes == null || imagenes.isEmpty()){
-			throw new Exception ("No hay imagenes cargadas.");
+			throw new RuntimeException("No hay imagenes cargadas.");
 		}
 		
 		int m = imagenes.get(0).length;		// Rows
@@ -143,46 +170,31 @@ public class PCA {
 		return X;
 	}
 
-	/**
-	 * Armo la matriz de referencia con las imagenes normalizadas como vectores
-	 * @throws Exception
-	 */
-	public void prepararMatrizXReferencia () throws Exception{
-		int[][] _X = this.list2Matriz(this.imagenesReferencia);
+	//Pasa el vector que esta dentro de imagen al espacio de 'caras' (o sea, le resta la media y lo multiplica por W)
+	public void pasarAEigenface(Imagen imagen) {
+		double[][] x_menos_media = new double[imagen.getImagen().length][1];
 
-		double[] media = MathsUtils.getMediaMatriz (_X);
-		double[] desvio = MathsUtils.getDesvioStdMatriz (_X);
+		// Preparo la X menos la media
+		for (int i = 0; i < imagen.getImagen().length; i++){
+			x_menos_media[i][0] = imagen.getImagen()[i] - media[i];
+		}
 		
-		// Obtengo la matriz con los vectores normalizados
-		double[][] Z = MathsUtils.getNormalization(_X, media, desvio);
+		Matrix imagenMatriz = new Matrix(x_menos_media);
+		Matrix Wtrans = this.W.transpose();
+		Matrix imagenEnEigenface = Wtrans.times(imagenMatriz);
 		
-		// Obtengo la matriz X para luego utilizarla en la proyeccion
-		Matrix X = MathsUtils.getMatrizNormalizadaMenosMedia(Z, media); // TODO: PARA MI ESTO NO VA... DSP LO CHARLAMOS...
-				
-		this.X = X;
+		imagen.setImagen(imagenEnEigenface.getRowPackedCopy());
 	}
 	
-	/**
-	 * yi = Wpca(traspuesta)*xi
-	 * 
-	 */
-	public void proyectarImagenesDeReferencia() {
-		Matrix Wtrans = this.W.transpose();
-		this.Y = Wtrans.times(this.X);
+	//TODO: Esto habria que emprolijarlo un toque.
+	public void generarImagenesDeReferencia(String dirImagenesDeReferencia) {
+		imagenesReferencia = new ArrayList<Imagen>();
+		this.leerAImagen(dirImagenesDeReferencia, imagenesReferencia);
+		for ( Imagen imagen : this.imagenesReferencia) {
+			this.pasarAEigenface(imagen);
+		}
 	}
 	
-	public Matrix pasarAEigenface(List<int[]> _nuevasImagenes) throws Exception {
-		int[][] nuevasImagenes = this.list2Matriz(_nuevasImagenes);
-		double[] media = MathsUtils.getMediaMatriz (nuevasImagenes);
-		double[] desvio = MathsUtils.getDesvioStdMatriz (nuevasImagenes);
-		
-		// Obtengo la matriz con los vectores normalizados
-		double[][] Z = MathsUtils.getNormalization(nuevasImagenes, media, desvio);
-		
-		// Obtengo la matriz X para luego utilizarla en la proyeccion
-		Matrix nuevaImagenMatriz = MathsUtils.getMatrizNormalizadaMenosMedia(Z, media); // TODO: PARA MI ESTO NO VA... DSP LO CHARLAMOS...
-		Matrix Wtrans = this.W.transpose();
-		return Wtrans.times(nuevaImagenMatriz);
-	}
+	
 	
 }
