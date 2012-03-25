@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.8.2
+Created-By: 1.7.0_01-b08 (Oracle Corporation)
+Implementation-Version: 1.1
+Built-Date: 2012-03-25 20:13:41
+Main-Class: img.main.Main
+Class-Path: lib/jai_codec-1.1.3-alpha.jar lib/jmatharray.jar lib/jmath
+ io.jar lib/jmathplot.jar
+
