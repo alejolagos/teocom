@@ -1,0 +1,1 @@
+java -jar image-test.jar --find --level=jar lib/jai_codec-1.1.3-alpha.jar:lib/jmatharray.jar:lib/jmathio.jar:lib/jmathplot.jar
