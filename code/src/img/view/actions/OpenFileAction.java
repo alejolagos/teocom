@@ -39,6 +39,7 @@ public class OpenFileAction extends AbstractAction {
     			}
     			else{
     				((EntradaFrame)frame).errorArchivoTestSeleccionado(file);
+    				((EntradaFrame)frame).mostrarErrorImagenTest();
     			}
     			break;
     		case JFileChooser.CANCEL_OPTION:

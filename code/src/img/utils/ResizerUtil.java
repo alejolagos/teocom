@@ -1,4 +1,4 @@
-package img.main;
+package img.utils;
 
 import java.awt.AlphaComposite;
 import java.awt.Graphics2D;

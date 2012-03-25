@@ -1,7 +1,7 @@
 package img.dataobjects;
 
 import img.constants.Globals;
-import img.main.ResizerUtil;
+import img.utils.ResizerUtil;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;

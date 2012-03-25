@@ -1,12 +1,18 @@
 package img.view.frames;
 
 // Uso de un objeto JPanel para ayudar a distribuir los componentes.
+import img.constants.Globals;
 import img.dataobjects.Imagen;
 import img.dataobjects.NuevoPCA;
 import img.dataobjects.PGM;
 import img.utils.MathsUtils;
 import img.view.actions.AcceptAction;
+import img.view.actions.ExitAction;
 import img.view.actions.OpenFileAction;
+import img.view.exceptions.CrearBaseDatosException;
+import img.view.exceptions.EntrenarException;
+import img.view.exceptions.InicializarException;
+import img.view.exceptions.PropertiesException;
 import img.view.filters.PGMFilter;
 import img.view.panels.ImagenPanel;
 
@@ -17,8 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -40,6 +44,7 @@ public class EntradaFrame extends JFrame {
 	private NuevoPCA pca;
 	private ImagenPanel panelImagenTest = new ImagenPanel();
 	private File selectedFile;
+	private String mensajeErrorFile = "";
 	private Imagen resultFile;
 	
 	private static Logger logger = Logger.getLogger(EntradaFrame.class.getSimpleName());
@@ -56,6 +61,8 @@ public class EntradaFrame extends JFrame {
 	private JFileChooser chooser;
 	private int tiempoTarea;
 	private JButton botonAbrir;
+	private JButton botonAceptar;
+	private JButton botonSalir;
 	
 	static final int TIEMPO_REFRESH_TIMER = 500;		// milisegundos
 	static final int TIEMPO_TAREA_INICIO = 1;			// segundos
@@ -63,22 +70,8 @@ public class EntradaFrame extends JFrame {
 	static final int TIEMPO_TAREA_BASE_DATOS = 5;		// segundos
 	
 	public EntradaFrame() {
-		super("Entrada");
+		super("PCA - IMAGE TEST");
 		
-		this.propFile = new Properties();
-	    String fileName = "config/app.properties";
-	    InputStream is;
-		try {
-			is = new FileInputStream(fileName);
-			propFile.load(is);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		// Configuracion ventana
 		this.configureFrame();
 		this.createTimer();
@@ -90,22 +83,40 @@ public class EntradaFrame extends JFrame {
 		contenedor.add(label1);
 		contenedor.add(panelPb, BorderLayout.SOUTH);
 
-		// Trabajar imagenes
-		this.inicializar();
-		this.entrenar();
-		this.crearBaseDeDatos();
+		try {
+			this.openPropertiesFile();
 
-		this.repaint();
+			// Trabajar imagenes
+			this.inicializar();
+			this.entrenar();
+			this.crearBaseDeDatos();
 
-		this.createFileChooser();
+			this.repaint();
+		
+			this.createFileChooser();
+			
+			contenedor.remove(panelPb);
+			contenedor.remove(label1);
+			contenedor.add(panelBotones, BorderLayout.EAST);
+			contenedor.add(panelImagenTest, BorderLayout.CENTER);
+			contenedor.add(panelAceptar, BorderLayout.SOUTH);
+		} catch (Exception e) {
+			this.repaint();
+			
+			contenedor.remove(panelPb);
+			contenedor.remove(label1);
+			contenedor.add(panelImagenTest, BorderLayout.CENTER);
 
-		contenedor.remove(panelPb);
-		contenedor.remove(label1);
-		contenedor.add(panelBotones, BorderLayout.EAST);
-		contenedor.add(panelImagenTest, BorderLayout.CENTER);
-		contenedor.add(panelAceptar, BorderLayout.SOUTH);
+			panelImagenTest.setErrorMsg(e.getMessage());
+			panelImagenTest.setTestFile(null);
+			panelImagenTest.paint(panelImagenTest.getGraphics());
+			panelImagenTest.setVisible(true);
+		}
+		
+		
 		
 		repintar();
+
 	} // fin del constructor de DemoPanel
 
 	@SuppressWarnings("unused")
@@ -120,7 +131,19 @@ public class EntradaFrame extends JFrame {
 		setVisible(true);
 	}
 
-   
+	
+	private void openPropertiesFile() throws PropertiesException {
+		String fileName = Globals.PROPERTIES_PATH;
+		try{
+			this.propFile = new Properties();
+		    InputStream is;
+			is = new FileInputStream(fileName);
+			propFile.load(is);
+		}catch (Exception e) {
+			throw new PropertiesException(fileName);
+		}
+	}
+	
    	public void trabajarImagenTest (){
 		PGM imagenPGM = new PGM(selectedFile.getAbsolutePath());
 		
@@ -132,6 +155,7 @@ public class EntradaFrame extends JFrame {
 			pca.pasarAEigenface(imagen);
 
 			String distanciaMenorNombre = "";
+			double distanciaEuclidea = 1042;
 			double distanciaMenor = 99999;
 			double aux;
 			
@@ -144,14 +168,21 @@ public class EntradaFrame extends JFrame {
 				}
 			}
 			
+			logger.info("Distancia menor encontrada " + distanciaMenor);
+			
+			if (distanciaMenor > distanciaEuclidea)
+				this.resultFile = null;
+			
 			//
 			if (resultFile != null && resultFile.getNombre() != null && !resultFile.getNombre().equals("")){
 				this.mostrarImagenResult();
-				System.out.println(distanciaMenorNombre);
+				logger.info(distanciaMenorNombre);
 			}
 			else{
+				this.mensajeErrorFile = "NO ENCONTRADO";
+				this.mostrarErrorImagenResult();
 				// mostrar no encontrado
-				System.out.println("NO ENCONTRADO");
+				logger.info("NO ENCONTRADO");
 			}
 				
 			
@@ -177,10 +208,26 @@ public class EntradaFrame extends JFrame {
 		this.resultFile = resultFile;
 	}
 
+	public void mostrarErrorImagenResult(){
+		panelImagenTest.setErrorMsg(mensajeErrorFile);
+		panelImagenTest.paint(panelImagenTest.getGraphics());
+		panelImagenTest.setVisible(true);
+	}
+	
+	public void mostrarErrorImagenTest(){
+		panelImagenTest.setErrorMsg(mensajeErrorFile);
+		panelImagenTest.paint(panelImagenTest.getGraphics());
+		panelImagenTest.setVisible(true);
+		
+		botonAceptar.setEnabled(false);
+	}
+
 	public void mostrarImagenTest(){
 		panelImagenTest.setTestFile(selectedFile);
 		panelImagenTest.paint(panelImagenTest.getGraphics());
 		panelImagenTest.setVisible(true);
+
+		botonAceptar.setEnabled(true);
 	}
 
 	public void mostrarImagenResult(){
@@ -192,8 +239,9 @@ public class EntradaFrame extends JFrame {
 	}
 
 	public void errorArchivoTestSeleccionado(File file) {
-		// TODO
-		System.out.println("Error archivo seleccionado...");
+		String msg = (file != null && file.getName() != null) ?  "El archivo \"" + file.getName() + "\"  que intenta abrir no es una imagen PGM valida." : "";
+		this.mensajeErrorFile = msg; 
+		logger.info(msg);
 	}
 	
 	class PanelListener implements ActionListener {
@@ -204,9 +252,10 @@ public class EntradaFrame extends JFrame {
 	
 	private void configureFrame(){
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(800, 500);
+		setSize(Globals.FRAME_WIDTH, Globals.FRAME_HEIGHT);
 		setVisible(true);
 		setLocationRelativeTo(null);
+		setResizable(false);
 	}
 	
 	private void createProgressBar(){
@@ -239,40 +288,52 @@ public class EntradaFrame extends JFrame {
 		label1.setHorizontalTextPosition(JLabel.CENTER);
 	}
 	
-	private void inicializar(){
-		label1.setText("INICIALIZANDO APLICACIÓN...");
-		tiempoTarea = TIEMPO_TAREA_INICIO; 
-		progressBar.setValue(tiempoTarea);	// Porque es muy cortita
-		progressBar.setMaximum(tiempoTarea);
-		i = 0;
-		timer.start();
+	private void inicializar() throws InicializarException{
+		try{
+			label1.setText("INICIALIZANDO APLICACIÓN...");
+			tiempoTarea = TIEMPO_TAREA_INICIO; 
+			progressBar.setValue(tiempoTarea);	// Porque es muy cortita
+			progressBar.setMaximum(tiempoTarea);
+			i = 0;
+			timer.start();
+		}catch (Exception e){
+			throw new InicializarException();
+		}
 	}
 	
-	private void entrenar(){
-		this.pca = new NuevoPCA(propFile.getProperty("entrenamientoFolder"));
-		logger.info("-------- INICIO ENTRENAMIENTO --------");
-		label1.setText("ENTRENANDO AL SISTEMA...");
-		tiempoTarea = TIEMPO_TAREA_ENTRENAMIENTO * 1000 / TIEMPO_REFRESH_TIMER; 
-		progressBar.setMaximum(tiempoTarea);
-		timer.start();
-		this.repaint();
-		
-		pca.entrenar();
-		
-		logger.info("--------  FIN ENTRENAMIENTO --------");	
-	}
-	
-	private void crearBaseDeDatos(){
-		label1.setText("GENERANDO BASE DE DATOS...");
-		tiempoTarea = TIEMPO_TAREA_BASE_DATOS * 1000 / TIEMPO_REFRESH_TIMER; 
-		progressBar.setMaximum(tiempoTarea);
-		timer.start();
-		
-		this.repaint();
+	private void entrenar() throws EntrenarException{
+		try{
+			this.pca = new NuevoPCA(propFile.getProperty("entrenamientoFolder"));
+			logger.info("-------- INICIO ENTRENAMIENTO --------");
+			label1.setText("ENTRENANDO AL SISTEMA...");
+			tiempoTarea = TIEMPO_TAREA_ENTRENAMIENTO * 1000 / TIEMPO_REFRESH_TIMER; 
+			progressBar.setMaximum(tiempoTarea);
+			timer.start();
+			this.repaint();
 			
-		pca.generarImagenesDeReferencia(propFile.getProperty("referenciaFolder"));
-		
-		label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");	
+			pca.entrenar();
+			
+			logger.info("--------  FIN ENTRENAMIENTO --------");
+		} catch (Exception e) {
+			throw new EntrenarException();
+		}
+	}
+	
+	private void crearBaseDeDatos() throws CrearBaseDatosException{
+		try{
+			label1.setText("GENERANDO BASE DE DATOS...");
+			tiempoTarea = TIEMPO_TAREA_BASE_DATOS * 1000 / TIEMPO_REFRESH_TIMER; 
+			progressBar.setMaximum(tiempoTarea);
+			timer.start();
+			
+			this.repaint();
+			
+			pca.generarImagenesDeReferencia(propFile.getProperty("referenciaFolder"));
+			
+			label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");	
+		} catch (Exception e) {
+			throw new CrearBaseDatosException();
+		}
 	}
 	
 	private void createFileChooser(){
@@ -283,15 +344,24 @@ public class EntradaFrame extends JFrame {
 		
 		Action openAction = new OpenFileAction(this, chooser);
 		Action acceptAction = new AcceptAction(this);
+		Action exitAction = new ExitAction(this);
 
+		// Examinar
+		panelBotones = new JPanel();
 		botonAbrir = new JButton(openAction);
 		botonAbrir.setText(TEXTO_ABRIR);
-		panelBotones = new JPanel();
 		panelBotones.add(botonAbrir);
 		
-		JButton botonAceptar = new JButton(acceptAction);
-		botonAceptar.setText("Aceptar");
+		// Aceptar / Salir
 		panelAceptar = new JPanel();
+		botonAceptar = new JButton(acceptAction);
+		botonAceptar.setText("Procesar");
+		botonSalir = new JButton(exitAction);
+		botonSalir.setText("Salir");
 		panelAceptar.add(botonAceptar);
+		panelAceptar.add(botonSalir);
+
+		botonAceptar.setEnabled(false);
 	}
+
 } 
