@@ -3,7 +3,7 @@ package img.view.frames;
 // Uso de un objeto JPanel para ayudar a distribuir los componentes.
 import img.constants.Globals;
 import img.dataobjects.Imagen;
-import img.dataobjects.NuevoPCA;
+import img.dataobjects.PCA;
 import img.dataobjects.PGM;
 import img.utils.MathsUtils;
 import img.view.actions.AcceptAction;
@@ -41,7 +41,7 @@ public class EntradaFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	//   private static String TEXTO_ABRIR = "Seleccionar Imagen de Test";
 	private static String TEXTO_ABRIR = "Examinar...";
-	private NuevoPCA pca;
+	private PCA pca;
 	private ImagenPanel panelImagenTest = new ImagenPanel();
 	private File selectedFile;
 	private String mensajeErrorFile = "";
@@ -119,10 +119,6 @@ public class EntradaFrame extends JFrame {
 
 	} // fin del constructor de DemoPanel
 
-	@SuppressWarnings("unused")
-	public static void main(String args[]) {
-		EntradaFrame aplicacion = new EntradaFrame();
-	}
 	
 	private void repintar() {
 		// Tengo qeu hacer estas 3 cosas para que se repinte :S
@@ -179,15 +175,12 @@ public class EntradaFrame extends JFrame {
 				logger.info(distanciaMenorNombre);
 			}
 			else{
-				this.mensajeErrorFile = "NO ENCONTRADO";
-				this.mostrarErrorImagenResult();
-				// mostrar no encontrado
+				this.mostrarImagenResult();
 				logger.info("NO ENCONTRADO");
 			}
 				
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
    }
@@ -208,14 +201,9 @@ public class EntradaFrame extends JFrame {
 		this.resultFile = resultFile;
 	}
 
-	public void mostrarErrorImagenResult(){
-		panelImagenTest.setErrorMsg(mensajeErrorFile);
-		panelImagenTest.paint(panelImagenTest.getGraphics());
-		panelImagenTest.setVisible(true);
-	}
-	
 	public void mostrarErrorImagenTest(){
 		panelImagenTest.setErrorMsg(mensajeErrorFile);
+		panelImagenTest.setImagenNoEncontrada(false);
 		panelImagenTest.paint(panelImagenTest.getGraphics());
 		panelImagenTest.setVisible(true);
 		
@@ -224,6 +212,7 @@ public class EntradaFrame extends JFrame {
 
 	public void mostrarImagenTest(){
 		panelImagenTest.setTestFile(selectedFile);
+		panelImagenTest.setImagenNoEncontrada(false);
 		panelImagenTest.paint(panelImagenTest.getGraphics());
 		panelImagenTest.setVisible(true);
 
@@ -231,8 +220,15 @@ public class EntradaFrame extends JFrame {
 	}
 
 	public void mostrarImagenResult(){
-		File resultFile = new File (this.resultFile.getNombre());
+		File resultFile = null;
+		boolean imagenNoEncontrada = true;
+		if (this.resultFile != null){
+			resultFile = new File (this.resultFile.getNombre());
+			imagenNoEncontrada = false;
+		}
+		
 		panelImagenTest.setResultFile(resultFile);
+		panelImagenTest.setImagenNoEncontrada(imagenNoEncontrada);
 		panelImagenTest.paint(panelImagenTest.getGraphics());
 		panelImagenTest.setVisible(true);
 		panelImagenTest.setResultFile(null);
@@ -303,7 +299,7 @@ public class EntradaFrame extends JFrame {
 	
 	private void entrenar() throws EntrenarException{
 		try{
-			this.pca = new NuevoPCA(propFile.getProperty("entrenamientoFolder"));
+			this.pca = new PCA(propFile.getProperty("entrenamientoFolder"));
 			logger.info("-------- INICIO ENTRENAMIENTO --------");
 			label1.setText("ENTRENANDO AL SISTEMA...");
 			tiempoTarea = TIEMPO_TAREA_ENTRENAMIENTO * 1000 / TIEMPO_REFRESH_TIMER; 
