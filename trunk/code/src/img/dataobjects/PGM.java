@@ -12,12 +12,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apache.log4j.Logger;
+
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageEncoder;
 import com.sun.media.jai.codec.PNMEncodeParam;
 
 public class PGM
 {
+	private static Logger logger = Logger.getLogger(PGM.class);
+	
 	private String FilePath;
 	
 	//pgm imageheader
@@ -265,7 +269,7 @@ public class PGM
 		}
 		catch(Exception err)
 		{
-			System.out.println("Error: "+err);
+			logger.info("Error: "+err);
 			System.exit(-1);
 		}
 	}
@@ -313,7 +317,7 @@ public class PGM
 		}
 		catch(Exception err)
 		{
-			System.out.println("Error: "+err);
+			logger.info("Error: "+err);
 			System.exit(-1);
 		}
 	}

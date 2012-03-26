@@ -25,7 +25,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -47,7 +48,7 @@ public class EntradaFrame extends JFrame {
 	private String mensajeErrorFile = "";
 	private Imagen resultFile;
 	
-	private static Logger logger = Logger.getLogger(EntradaFrame.class.getSimpleName());
+	private static Logger logger = Logger.getLogger(EntradaFrame.class);
 	
 	private Properties propFile;
    

@@ -7,13 +7,14 @@ import img.utils.MathsUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
+import org.apache.log4j.Logger;
 
 import Jama.EigenvalueDecomposition;
 import Jama.Matrix;
 
 public class PCA {
-	private static Logger logger = Logger.getLogger(PCA.class.getSimpleName());
+	private static Logger logger = Logger.getLogger(PCA.class);
 	private List<int[]> imagenesEntrenamiento;
 	private List<Imagen> imagenesReferencia;//Basicamente es la base de datos de la aplicación.
 	private double[] media; //media de la matriz generada con las imagenes de entrenamiento
@@ -186,7 +187,6 @@ public class PCA {
 		imagen.setImagen(imagenEnEigenface.getRowPackedCopy());
 	}
 	
-	//TODO: Esto habria que emprolijarlo un toque.
 	public void generarImagenesDeReferencia(String dirImagenesDeReferencia) {
 		imagenesReferencia = new ArrayList<Imagen>();
 		this.leerAImagen(dirImagenesDeReferencia, imagenesReferencia);
