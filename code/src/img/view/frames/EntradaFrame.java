@@ -451,7 +451,7 @@ public class EntradaFrame extends JFrame {
 	
 	private void createFileChooser(){
 		chooser = new JFileChooser();
-		chooser.setCurrentDirectory(new File(propFile.getProperty("defaultTestFolder")));
+		chooser.setCurrentDirectory(new File(testFolder));
 		chooser.addChoosableFileFilter(new PGMFilter());
 		chooser.setDialogTitle(TEXTO_ABRIR);
 		
