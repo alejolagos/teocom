@@ -23,12 +23,20 @@ public class PCA {
 	private Matrix X;	//	Matriz preparada con las imagenes de referencia
 	
 	private Matrix Y; //Todas las imagenes proyectadas en el subespacio de 'caras'
+	
+	private int cantidadImagenesEntrenamiento;
+	private int cantidadImagenesReferencia;
 
-	public PCA(String dirPathEntrenamiento) {
+	public PCA(String dirPathEntrenamiento, int cantidadImagenesEntrenamiento, int cantidadImagenesReferencia) {
 		logger.info(dirPathEntrenamiento);
+		
 		this.imagenesEntrenamiento = new ArrayList<int[]>();
-		this.leer (dirPathEntrenamiento, this.imagenesEntrenamiento);
+		this.cantidadImagenesEntrenamiento = cantidadImagenesEntrenamiento;
+		this.cantidadImagenesReferencia = cantidadImagenesReferencia;
+		
+		this.leer (dirPathEntrenamiento, this.imagenesEntrenamiento, this.cantidadImagenesEntrenamiento);
 	}
+
 
 	public Matrix getW() {
 		return W;
@@ -62,44 +70,68 @@ public class PCA {
 		this.imagenesReferencia = imagenesReferencia;
 	}
 
+	public int getCantidadImagenesEntrenamiento() {
+		return cantidadImagenesEntrenamiento;
+	}
+
+	public void setCantidadImagenesEntrenamiento(int cantidadImagenesEntrenamiento) {
+		this.cantidadImagenesEntrenamiento = cantidadImagenesEntrenamiento;
+	}
+
+	public int getCantidadImagenesReferencia() {
+		return cantidadImagenesReferencia;
+	}
+
+	public void setCantidadImagenesReferencia(int cantidadImagenesReferencia) {
+		this.cantidadImagenesReferencia = cantidadImagenesReferencia;
+	}
+	
 	/**
 	 * Prepara las imagenes de entrenamiento o referencia 
 	 * @param dirPath
 	 * @param imagenes
 	 */
-	public void leer(String dirPath, List<int[]> imagenes) {
+	public void leer(String dirPath, List<int[]> imagenes, int cantidadImagenes) {
 		File folder = new File(dirPath);
 	    File[] listOfFiles = folder.listFiles();
 
-	    for (int i = 0; i < listOfFiles.length; i++) {
+	    int j = 0;
+	    
+	    for (int i = 0; i < listOfFiles.length && (listOfFiles[i].isDirectory()  || (j < cantidadImagenes && listOfFiles[i].isFile())); i++) {
 	    	if (!listOfFiles[i].isHidden()) {
 				if (listOfFiles[i].isFile()) {
 					PGM imagen = new PGM(dirPath+"\\"+listOfFiles[i].getName());
 					imagenes.add(imagen.getPixelArray());
+					j++;
 				} 
 				else if (listOfFiles[i].isDirectory()) {
-					leer(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
+					leer(dirPath+"\\"+listOfFiles[i].getName(), imagenes, cantidadImagenes);
 				}
 	    	}
 		}
 	}
 	
-	public void leerAImagen(String dirPath, List<Imagen> imagenes) {
+	public void leerAImagen(String dirPath, List<Imagen> imagenes, int cantidadImagenes) {
 		File folder = new File(dirPath);
 	    File[] listOfFiles = folder.listFiles();
 
-	    for (int i = 0; i < listOfFiles.length; i++) {
+	    int j = 0;
+	    
+	    for (int i = 0; i < listOfFiles.length && (listOfFiles[i].isDirectory()  || (j < cantidadImagenes && listOfFiles[i].isFile())); i++) {
 	    	if (!listOfFiles[i].isHidden()) {
 				if (listOfFiles[i].isFile()) {
 					Imagen imagen = new Imagen();
+					
 					PGM imagenPGM = new PGM(dirPath+"\\"+listOfFiles[i].getName());
 					imagen.setImagen(imagenPGM.getPixelArrayDouble());
 					imagen.setNombre(dirPath+"\\"+listOfFiles[i].getName());
 					
 					imagenes.add(imagen);
+					
+					j++;
 				} 
 				else if (listOfFiles[i].isDirectory()) {
-					leerAImagen(dirPath+"\\"+listOfFiles[i].getName(), imagenes);
+					leerAImagen(dirPath+"\\"+listOfFiles[i].getName(), imagenes, cantidadImagenes);
 				}
 	    	}
 		}
@@ -189,7 +221,9 @@ public class PCA {
 	
 	public void generarImagenesDeReferencia(String dirImagenesDeReferencia) {
 		imagenesReferencia = new ArrayList<Imagen>();
-		this.leerAImagen(dirImagenesDeReferencia, imagenesReferencia);
+		
+		this.leerAImagen(dirImagenesDeReferencia, imagenesReferencia, cantidadImagenesReferencia);
+		
 		for ( Imagen imagen : this.imagenesReferencia) {
 			this.pasarAEigenface(imagen);
 		}
