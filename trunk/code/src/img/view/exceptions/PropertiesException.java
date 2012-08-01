@@ -8,5 +8,9 @@ public class PropertiesException extends AppImageTestException {
 		super("Error al cargar el archivo de configuracion: " + fileName);
 	}
 
+	public PropertiesException(String parameter, String message) {
+		super("- " + parameter + ": " + message);
+	}
+
 	
 }

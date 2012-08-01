@@ -3,7 +3,12 @@ package img.constants;
 
 public class Globals {
 	
-	public static String PROPERTIES_PATH = "config/app.properties";
+	public static String PROPERTIES_PATH 				= "config/app.properties";
+	public static String PROPERTIES_TEST_FOLDER 		= "defaultTestFolder";
+	public static String PROPERTIES_DB_FOLDER 			= "defaultDBFolder";
+	public static String PROPERTIES_CANT_ENTRENAMIENTO 	= "cantEntrenamiento";
+	public static String PROPERTIES_CANT_REFERENCIA 	= "cantReferencia";
+	public static String PROPERTIES_DIST_EUCLIDEA		= "distanciaEuclidea";
 	
 	public static int BackGround=0,ForeGround=255;
 	public static int NW=0,N=1,NE=2,E=3,SE=4,S=5,SW=6,W=7;

@@ -51,6 +51,11 @@ public class EntradaFrame extends JFrame {
 	private static Logger logger = Logger.getLogger(EntradaFrame.class);
 	
 	private Properties propFile;
+	private String dbFolder;
+	private String testFolder;
+	private int cantImgEntrenamiento;
+	private int cantImgReferencia;
+	private double distanciaEuclidea;
    
 	private JLabel label1;
 	private int i = 0;
@@ -86,7 +91,10 @@ public class EntradaFrame extends JFrame {
 
 		try {
 			this.openPropertiesFile();
+			this.setPropertiesParameters ();
 
+			this.validar();
+			
 			// Trabajar imagenes
 			this.inicializar();
 			this.entrenar();
@@ -120,7 +128,112 @@ public class EntradaFrame extends JFrame {
 
 	} // fin del constructor de DemoPanel
 
+	/**
+	 * Seteo de los parametros de configuracion
+	 * @throws PropertiesException
+	 */
+	private void setPropertiesParameters() throws PropertiesException {
+		// Carpeta de la base de datos
+		try{
+			dbFolder = propFile.getProperty(Globals.PROPERTIES_DB_FOLDER);
+			if (dbFolder == null)
+				throw new Exception();
+		} catch (Exception e){
+			throw new PropertiesException(Globals.PROPERTIES_DB_FOLDER, "El parametro no existe en el archivo " + Globals.PROPERTIES_PATH);
+		}
+		
+		// Cantidad de imagenes de entrenamiento
+		try{
+			cantImgEntrenamiento = Integer.valueOf(propFile.getProperty(Globals.PROPERTIES_CANT_ENTRENAMIENTO));			
+			if (cantImgEntrenamiento < 2)
+				throw new Exception();
+		} catch (Exception e){
+			throw new PropertiesException(Globals.PROPERTIES_CANT_ENTRENAMIENTO, "El parametro no existe en el archivo " + Globals.PROPERTIES_PATH 
+					+ " o no es un numero valido" );
+		}
+		
+		// Cantidad de imagenes de referencia
+		try{
+			cantImgReferencia = Integer.valueOf(propFile.getProperty(Globals.PROPERTIES_CANT_REFERENCIA));
+			if (cantImgReferencia < 2)
+				throw new Exception();
+		} catch (Exception e){
+			throw new PropertiesException(Globals.PROPERTIES_CANT_REFERENCIA, "El parametro no existe en el archivo " + Globals.PROPERTIES_PATH 
+					+ " o no es un numero valido" );
+		}
+		
+		// Carpeta de imagenes de test
+		testFolder = propFile.getProperty(Globals.PROPERTIES_TEST_FOLDER);
+		
+		// Distancia euclidea para los resultados
+		try{
+			distanciaEuclidea = Double.valueOf(propFile.getProperty(Globals.PROPERTIES_DIST_EUCLIDEA));
+			if (distanciaEuclidea < 0.1)
+				throw new Exception();
+		} catch (Exception e){
+			throw new PropertiesException(Globals.PROPERTIES_DIST_EUCLIDEA, "El parametro no existe en el archivo " + Globals.PROPERTIES_PATH 
+					+ " o no es un numero valido" );
+		}
+		
+	}
+
+	/**
+	 * Validaciones sobre los parametros de entrada
+	 * @throws PropertiesException
+	 */
+	private void validar() throws PropertiesException {
+		this.validarEntrenamiento();
+		this.validarRererencia();
+	}
 	
+
+	/**
+	 * Valido que la cantidad sea menor o igual a las de referencia y que existan por cada persona la cantidad necesaria de imagenes de entrenamiento
+	 * @throws PropertiesException
+	 */
+	private void validarEntrenamiento () throws PropertiesException {
+		if (cantImgEntrenamiento > cantImgReferencia)
+			throw new PropertiesException(Globals.PROPERTIES_CANT_ENTRENAMIENTO, 
+					"La cantidad de imagenes ("+ cantImgEntrenamiento + ") debe ser menor o igual a las de referencia (" + cantImgReferencia + ")");
+		
+		File folder = new File(dbFolder);
+	    File[] listOfFiles = folder.listFiles();
+
+	    // Itero la cantidad de carpetas que tiene la BD
+	    for (int i = 0; i < listOfFiles.length; i++) {
+	    	if (!listOfFiles[i].isHidden() && listOfFiles[i].isDirectory()) {
+	    		File personFolder = new File(dbFolder + listOfFiles[i].getName());
+	    		
+	    	    if (cantImgEntrenamiento > personFolder.listFiles().length){
+	    	    	throw new PropertiesException(Globals.PROPERTIES_CANT_ENTRENAMIENTO, 
+	    	    			"Cantidad insuficiente de imagenes para la persona \"" + listOfFiles[i].getName() + "\" (" + personFolder.listFiles().length + ")"); 
+				}
+	    	}
+		}	
+	}
+	
+	/**
+	 * Valido que existan por cada persona la cantidad necesaria de imagenes de referencia
+	 * @throws PropertiesException
+	 */
+	private void validarRererencia () throws PropertiesException {
+		File folder = new File(dbFolder);
+		File[] listOfFiles = folder.listFiles();
+		
+		// Itero la cantidad de carpetas que tiene la BD
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (!listOfFiles[i].isHidden() && listOfFiles[i].isDirectory()) {
+				File personFolder = new File(dbFolder + listOfFiles[i].getName());
+				
+				if (cantImgReferencia > personFolder.listFiles().length){
+					throw new PropertiesException(Globals.PROPERTIES_CANT_REFERENCIA, 
+							"Cantidad insuficiente de imagenes para la persona \"" + listOfFiles[i].getName() + "\" (" + personFolder.listFiles().length + ")"); 
+				}
+			}
+		}	
+	}
+
+
 	private void repintar() {
 		// Tengo qeu hacer estas 3 cosas para que se repinte :S
 		getContentPane().repaint();
@@ -152,7 +265,6 @@ public class EntradaFrame extends JFrame {
 			pca.pasarAEigenface(imagen);
 
 			String distanciaMenorNombre = "";
-			double distanciaEuclidea = 1042;
 			double distanciaMenor = 99999;
 			double aux;
 			
@@ -165,6 +277,7 @@ public class EntradaFrame extends JFrame {
 				}
 			}
 			
+			distanciaMenor /= 1000;
 			logger.info("Distancia menor encontrada " + distanciaMenor);
 			
 			if (distanciaMenor > distanciaEuclidea)
@@ -300,7 +413,10 @@ public class EntradaFrame extends JFrame {
 	
 	private void entrenar() throws EntrenarException{
 		try{
-			this.pca = new PCA(propFile.getProperty("entrenamientoFolder"));
+			this.validate ();
+			
+			pca = new PCA(dbFolder, cantImgEntrenamiento, cantImgReferencia);
+			
 			logger.info("-------- INICIO ENTRENAMIENTO --------");
 			label1.setText("ENTRENANDO AL SISTEMA...");
 			tiempoTarea = TIEMPO_TAREA_ENTRENAMIENTO * 1000 / TIEMPO_REFRESH_TIMER; 
@@ -325,7 +441,7 @@ public class EntradaFrame extends JFrame {
 			
 			this.repaint();
 			
-			pca.generarImagenesDeReferencia(propFile.getProperty("referenciaFolder"));
+			pca.generarImagenesDeReferencia(dbFolder);
 			
 			label1.setText("SE FINALIZÓ LA GENERACION DE BASE DE DATOS");	
 		} catch (Exception e) {
