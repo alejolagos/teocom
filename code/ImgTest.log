@@ -1,0 +1,32 @@
+INFO main img.view.frames.EntradaFrame - =====================================================
+INFO main img.view.frames.EntradaFrame - Nueva instancia
+INFO main img.view.frames.EntradaFrame - =====================================================
+INFO main img.dataobjects.PCA - images\orl_db\
+INFO main img.view.frames.EntradaFrame - -------- INICIO ENTRENAMIENTO --------
+INFO main img.dataobjects.PCA - ------- CALCULO CONVARIANZA -------
+INFO main img.utils.CommonsUtils - PCA - Msg - Tiempo calcular Covarianza: 7segs.
+INFO main img.dataobjects.PCA - ------- OBTENGO AUTEVECTORES/AUTOVALORES -------
+INFO main img.utils.CommonsUtils - PCA - Msg - Tiempo calcular Autovectores: 48segs.
+INFO main img.dataobjects.PCA - ------- OBTENGO MATRIZ DE PROYECCION -------
+INFO main img.utils.CommonsUtils - PCA - Msg - Tiempo obtener Autovectores mas significativos: 0segs.
+INFO main img.view.frames.EntradaFrame - --------  FIN ENTRENAMIENTO --------
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.9888777388438429
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s01\08.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.3970490178435562
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s03\09.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.6613884678814629
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s40\05.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.6229527146586635
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s07\05.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.6674154728391164
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s09\05.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 1.064980910436557
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - NO ENCONTRADO
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.2935637823726242
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s13\05.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.4093772230705831
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s15\02.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.4098478096106625
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s17\07.pgm
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - Distancia menor encontrada 0.49371578975060404
+INFO AWT-EventQueue-0 img.view.frames.EntradaFrame - images\orl_db\\s19\01.pgm
