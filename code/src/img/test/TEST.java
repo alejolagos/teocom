@@ -34,7 +34,7 @@ public class TEST {
 	    toLog = "Cantidad Referencia: " + aplicacion.getCantImgReferencia();
 	    logger.info(toLog);
 	    
-	    toLog = "Imagen Entrada;Distancia;ImagenEncontrada;Coincidencia";
+	    toLog = "Entrada Nombre;Entrada Foto;Distancia;Encontrada Nombre;Encontrada Foto;Coincidencia";
 	    logger.info(toLog);
 	    
 	    
@@ -54,7 +54,7 @@ public class TEST {
 					double aux;
 					
 					String nombreArchivoTest = imagen.getNombre().replace("images\\orl_test\\\\", ""); 
-					toLog =  nombreArchivoTest+ ";";
+					toLog = nombreArchivoTest.substring(0,3) + ";" + nombreArchivoTest.substring(4,6) + ";";
 					
 					for (Imagen imagenBase : aplicacion.getPca().getImagenesReferencia()) {
 						aux = MathsUtils.distanciaEntreVectores(imagenBase.getImagen(), imagen.getImagen());
@@ -74,12 +74,12 @@ public class TEST {
 					//
 					if (resultFile != null && resultFile.getNombre() != null && !resultFile.getNombre().equals("")){
 						String nombreArchivoEncontrado = resultFile.getNombre().replace("images\\orl_db\\\\", "");
-						toLog += nombreArchivoEncontrado + ";";
+						toLog += nombreArchivoEncontrado.substring(0,3) + ";" + nombreArchivoEncontrado.substring(4,6) + ";";
 						
 						toLog += nombreArchivoTest.substring(1,3).equals(nombreArchivoEncontrado.substring(1,3)) ? "Si" : "No";
 					}
 					else{
-						toLog += "NO ENCONTRADO;No";
+						toLog += "NO ENCONTRADO;NO ENCONTRADO;No";
 					}
 					logger.info(toLog);
 				} 
