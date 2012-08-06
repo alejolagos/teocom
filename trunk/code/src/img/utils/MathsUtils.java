@@ -18,7 +18,8 @@ public class MathsUtils {
 			for (int j = 0; j < n; j++){
 				media[i] += X[i][j];
 			}
-			media[i] = media[i] / (double)m;
+//			media[i] = media[i] / (double)m;
+			media[i] = media[i] / (double)n;
 		}
 		return media;
 	}

@@ -53,6 +53,7 @@ public class EntradaFrame extends JFrame {
 	private Properties propFile;
 	private String dbFolder;
 	private String testFolder;
+
 	private int cantImgEntrenamiento;
 	private int cantImgReferencia;
 	private double distanciaEuclidea;
@@ -277,7 +278,7 @@ public class EntradaFrame extends JFrame {
 				}
 			}
 			
-			distanciaMenor /= 1000;
+//			distanciaMenor /= 1000;
 			logger.info("Distancia menor encontrada " + distanciaMenor);
 			
 			if (distanciaMenor > distanciaEuclidea)
@@ -477,4 +478,27 @@ public class EntradaFrame extends JFrame {
 		botonAceptar.setEnabled(false);
 	}
 
+	public String getTestFolder() {
+		return testFolder;
+	}
+
+	public PCA getPca() {
+		return pca;
+	}
+
+	public void setPca(PCA pca) {
+		this.pca = pca;
+	}
+
+	public double getDistanciaEuclidea() {
+		return distanciaEuclidea;
+	}
+
+	public int getCantImgEntrenamiento() {
+		return cantImgEntrenamiento;
+	}
+
+	public int getCantImgReferencia() {
+		return cantImgReferencia;
+	}
 } 
