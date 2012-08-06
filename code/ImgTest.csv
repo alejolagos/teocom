@@ -1,0 +1,110 @@
+=====================================================
+Nueva instancia TEST
+=====================================================
+images\orl_db\
+-------- INICIO ENTRENAMIENTO --------
+------- CALCULO CONVARIANZA -------
+PCA - Msg - Tiempo calcular Covarianza: 7segs.
+------- OBTENGO AUTEVECTORES/AUTOVALORES -------
+PCA - Msg - Tiempo calcular Autovectores: 44segs.
+------- OBTENGO MATRIZ DE PROYECCION -------
+PCA - Msg - Tiempo obtener Autovectores mas significativos: 0segs.
+--------  FIN ENTRENAMIENTO --------
+Cantidad Entrenamiento: 5
+Cantidad Referencia: 9
+Imagen Entrada;Distancia;ImagenEncontrada;Coincidencia
+s01_10.pgm;18,189607138552482;s01\08.pgm;Si
+s02_10.pgm;9,26911847203745;s02\07.pgm;Si
+s03_10.pgm;8,263986796284806;s03\09.pgm;Si
+s04_10.pgm;12,109573365297544;s04\05.pgm;Si
+s05_10.pgm;14,54098276149152;s40\05.pgm;No
+s06_10.pgm;6,31197254316516;s06\04.pgm;Si
+s07_10.pgm;12,869519906228444;s07\02.pgm;Si
+s08_10.pgm;8,849510231167734;s08\03.pgm;Si
+s09_10.pgm;14,191063442420363;s09\05.pgm;Si
+s10_10.pgm;8,613310378954097;s10\02.pgm;Si
+s11_10.pgm;17,408710151333253;s27\07.pgm;No
+s12_10.pgm;17,632534226017665;s05\09.pgm;No
+s13_10.pgm;6,945221527359915;s13\05.pgm;Si
+s14_10.pgm;14,107847681807597;s14\09.pgm;Si
+s15_10.pgm;12,58695719870839;s15\02.pgm;Si
+s16_10.pgm;12,597816396593796;s16\03.pgm;Si
+s17_10.pgm;7,757315926268778;s17\07.pgm;Si
+s18_10.pgm;14,633158453513445;s18\06.pgm;Si
+s19_10.pgm;9,144343577965337;s19\01.pgm;Si
+s20_10.pgm;9,85794223594388;s20\02.pgm;Si
+s21_10.pgm;9,13135494176843;s21\08.pgm;Si
+s22_10.pgm;13,022267302725805;s22\02.pgm;Si
+s23_10.pgm;9,806425751962031;s23\01.pgm;Si
+s24_10.pgm;10,59884326844014;s24\09.pgm;Si
+s25_10.pgm;10,73831293817314;s25\03.pgm;Si
+s26_10.pgm;5,874521011517923;s26\08.pgm;Si
+s27_10.pgm;10,40383350181933;s27\01.pgm;Si
+s28_10.pgm;14,854125415108857;s28\03.pgm;Si
+s29_10.pgm;16,4059992670726;s29\07.pgm;Si
+s30_10.pgm;10,188293195289168;s30\01.pgm;Si
+s31_10.pgm;13,718724512177745;s31\05.pgm;Si
+s32_10.pgm;8,984287285680388;s32\06.pgm;Si
+s33_10.pgm;4,3153712136383175;s33\02.pgm;Si
+s34_10.pgm;5,767467408919569;s34\09.pgm;Si
+s35_10.pgm;18,48712535140237;s35\05.pgm;Si
+s36_10.pgm;15,125257357813998;s36\09.pgm;Si
+s37_10.pgm;8,32879722078472;s37\09.pgm;Si
+s38_10.pgm;7,7920983852550805;s38\05.pgm;Si
+s39_10.pgm;17,51489358229559;s39\06.pgm;Si
+s40_10.pgm;16,50995991311145;s40\04.pgm;Si
+=====================================================
+Nueva instancia TEST
+=====================================================
+images\orl_db\
+-------- INICIO ENTRENAMIENTO --------
+------- CALCULO CONVARIANZA -------
+PCA - Msg - Tiempo calcular Covarianza: 3segs.
+------- OBTENGO AUTEVECTORES/AUTOVALORES -------
+PCA - Msg - Tiempo calcular Autovectores: 48segs.
+------- OBTENGO MATRIZ DE PROYECCION -------
+PCA - Msg - Tiempo obtener Autovectores mas significativos: 0segs.
+--------  FIN ENTRENAMIENTO --------
+Cantidad Entrenamiento: 3
+Cantidad Referencia: 9
+Imagen Entrada;Distancia;ImagenEncontrada;Coincidencia
+s01_10.pgm;17,009175524372672;s17\05.pgm;No
+s02_10.pgm;8,068123117504186;s02\08.pgm;Si
+s03_10.pgm;7,837278020718779;s03\09.pgm;Si
+s04_10.pgm;10,452335094148324;s04\05.pgm;Si
+s05_10.pgm;12,379908739940856;s40\05.pgm;No
+s06_10.pgm;5,421516829198031;s06\04.pgm;Si
+s07_10.pgm;11,451741662818602;s07\05.pgm;Si
+s08_10.pgm;7,874302105430563;s08\03.pgm;Si
+s09_10.pgm;12,639395837972044;s09\05.pgm;Si
+s10_10.pgm;8,166984344358141;s10\02.pgm;Si
+s11_10.pgm;16,42754457132937;s27\07.pgm;No
+s12_10.pgm;16,371749615630073;s05\09.pgm;No
+s13_10.pgm;5,686676438842134;s13\05.pgm;Si
+s14_10.pgm;12,695799852073744;s14\09.pgm;Si
+s15_10.pgm;10,274936123485865;s15\05.pgm;Si
+s16_10.pgm;12,184686381730964;s16\03.pgm;Si
+s17_10.pgm;6,87775921871943;s17\07.pgm;Si
+s18_10.pgm;13,574938086167768;s18\06.pgm;Si
+s19_10.pgm;8,629405509217833;s19\01.pgm;Si
+s20_10.pgm;9,339741429513442;s20\02.pgm;Si
+s21_10.pgm;8,889000309263233;s21\08.pgm;Si
+s22_10.pgm;11,980203852296128;s22\02.pgm;Si
+s23_10.pgm;9,128212037160756;s23\01.pgm;Si
+s24_10.pgm;9,941990485545677;s24\09.pgm;Si
+s25_10.pgm;10,372649240878545;s25\03.pgm;Si
+s26_10.pgm;5,182326589785969;s26\08.pgm;Si
+s27_10.pgm;9,842867565229346;s27\01.pgm;Si
+s28_10.pgm;13,626057800622965;s28\03.pgm;Si
+s29_10.pgm;15,426051616637208;s29\07.pgm;Si
+s30_10.pgm;9,538685261899651;s30\01.pgm;Si
+s31_10.pgm;11,86246550644302;s31\05.pgm;Si
+s32_10.pgm;7,888273873394803;s32\06.pgm;Si
+s33_10.pgm;3,9667216515521586;s33\02.pgm;Si
+s34_10.pgm;5,2215276614037665;s34\09.pgm;Si
+s35_10.pgm;17,020327097676816;s35\05.pgm;Si
+s36_10.pgm;14,529606132172974;s36\09.pgm;Si
+s37_10.pgm;7,801963361623817;s37\09.pgm;Si
+s38_10.pgm;7,287825282743632;s38\05.pgm;Si
+s39_10.pgm;15,552462855210754;s39\06.pgm;Si
+s40_10.pgm;13,157163051502119;s40\04.pgm;Si

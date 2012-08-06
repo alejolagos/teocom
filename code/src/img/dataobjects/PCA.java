@@ -205,11 +205,48 @@ public class PCA {
 
 	//Pasa el vector que esta dentro de imagen al espacio de 'caras' (o sea, le resta la media y lo multiplica por W)
 	public void pasarAEigenface(Imagen imagen) {
-		double[][] x_menos_media = new double[imagen.getImagen().length][1];
+		double[] vec_imagen = new double[imagen.getImagen().length];
+		int n = vec_imagen.length;		
 
+		 // Media
+		double med = 0;
+		for (int i = 0; i < n; i++){
+			med += imagen.getImagen()[i];
+		}
+		med = med / (double)n;
+		
+		// Desvio
+        double var = 0;
+	    double[] vec_var = new double[n];
+	    
+        for (int i = 0; i < n; i++){
+			vec_var[i] = imagen.getImagen()[i] - med;
+		}
+        
+        for (int i = 0; i < n; i++){
+			vec_var[i] = (imagen.getImagen()[i] - med) * (imagen.getImagen()[i] - med);
+		}
+        
+        for (int i = 0; i < n; i++){
+			var += vec_var[i];
+		}
+        var = var / (double)n;
+        
+        double des = Math.sqrt(var);
+		
+        
+        double[] vec_z = new double[n];
+	    
+        for (int i = 0; i < n; i++){
+        	vec_z[i] = (imagen.getImagen()[i] - med) / des;
+		}
+        
+//		double[][] x_menos_media = new double[imagen.getImagen().length][1];
+		double[][] x_menos_media = new double[vec_z.length][1];
+		
 		// Preparo la X menos la media
-		for (int i = 0; i < imagen.getImagen().length; i++){
-			x_menos_media[i][0] = imagen.getImagen()[i] - media[i];
+		for (int i = 0; i < vec_z.length; i++){
+			x_menos_media[i][0] = vec_z[i] - media[i];
 		}
 		
 		Matrix imagenMatriz = new Matrix(x_menos_media);
