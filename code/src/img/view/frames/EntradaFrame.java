@@ -193,9 +193,9 @@ public class EntradaFrame extends JFrame {
 	 * @throws PropertiesException
 	 */
 	private void validarEntrenamiento () throws PropertiesException {
-		if (cantImgEntrenamiento > cantImgReferencia)
-			throw new PropertiesException(Globals.PROPERTIES_CANT_ENTRENAMIENTO, 
-					"La cantidad de imagenes ("+ cantImgEntrenamiento + ") debe ser menor o igual a las de referencia (" + cantImgReferencia + ")");
+//		if (cantImgEntrenamiento > cantImgReferencia)
+//			throw new PropertiesException(Globals.PROPERTIES_CANT_ENTRENAMIENTO, 
+//					"La cantidad de imagenes ("+ cantImgEntrenamiento + ") debe ser menor o igual a las de referencia (" + cantImgReferencia + ")");
 		
 		File folder = new File(dbFolder);
 	    File[] listOfFiles = folder.listFiles();
