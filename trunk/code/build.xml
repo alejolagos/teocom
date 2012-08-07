@@ -23,7 +23,7 @@
     	
 		<delete file="${jar.dir}/${jar.file}" />
 
-    	<!-- Jar para entregar a Ari Test -->
+    	<!-- Jar -->
     	<jar destfile="${jar.dir}/${jar.file}" manifest="MANIFEST.MF">
 			<fileset dir="${build.dir}" includes="**/*.*" />
 			<fileset dir="${src.dir}" includes="**/*.*" />
